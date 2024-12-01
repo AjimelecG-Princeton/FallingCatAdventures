@@ -1,6 +1,7 @@
 import dat from 'dat.gui';
 import { Scene, Color } from 'three';
 import BasicLights from '../lights/BasicLights';
+import Halo from '../objects/Halo';
 
 // Define an object type which describes each object in the update list
 type UpdateChild = {
@@ -32,7 +33,9 @@ class FallingScene extends Scene {
 
         // Add meshes to scene
         const lights = new BasicLights();
-        this.add(lights);
+        const halo = new Halo(this);
+
+        this.add(lights, halo);
 
         // Populate GUI
         this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
