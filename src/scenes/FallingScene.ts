@@ -1,8 +1,5 @@
 import dat from 'dat.gui';
 import { Scene, Color } from 'three';
-
-import Flower from '../objects/Flower';
-import Land from '../objects/Land';
 import BasicLights from '../lights/BasicLights';
 
 // Define an object type which describes each object in the update list
@@ -11,7 +8,7 @@ type UpdateChild = {
     update?: (timeStamp: number) => void;
 };
 
-class SeedScene extends Scene {
+class FallingScene extends Scene {
     // Define the type of the state field
     state: {
         gui: dat.GUI;
@@ -34,10 +31,8 @@ class SeedScene extends Scene {
         this.background = new Color(0x7ec0ee);
 
         // Add meshes to scene
-        const land = new Land();
-        const flower = new Flower(this);
         const lights = new BasicLights();
-        this.add(land, flower, lights);
+        this.add(lights);
 
         // Populate GUI
         this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
@@ -60,4 +55,4 @@ class SeedScene extends Scene {
     }
 }
 
-export default SeedScene;
+export default FallingScene;
