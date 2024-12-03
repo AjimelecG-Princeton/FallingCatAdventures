@@ -92,7 +92,6 @@ class FallingScene extends Scene {
         if (cat.position.y <= lastHaloY + haloSpacing + 50) {
             // Create a new halo
             const newHalo = new Halo(this);
-            console.log("Generated a new halo")
 
             // Position the halo at the new Y position
             newHalo.position.set(
