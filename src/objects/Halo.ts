@@ -22,7 +22,7 @@ class Halo extends Group {
                 scene.add(this);
 
                 // Optional: Adjust position or rotation of the Halo within its group
-                this.position.set(0, 0, 0);
+                //this.position.set(0, 0, 0);
                 this.rotateX(1.57);
             },
             undefined,

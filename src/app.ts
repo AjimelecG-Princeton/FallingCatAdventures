@@ -13,12 +13,12 @@ import FallingScene from './scenes/FallingScene';
 
 // Initialize core ThreeJS components
 const scene = new FallingScene();
-const camera = new PerspectiveCamera();
+//const camera = new PerspectiveCamera();
 const renderer = new WebGLRenderer({ antialias: true });
 
 // Set up camera
-camera.position.set(5, 20, -10);
-camera.lookAt(new Vector3(0, 0, 0));
+// camera.position.set(5, 230, -10);
+// camera.lookAt(new Vector3(0, 0, 0));
 
 // Set up renderer, canvas, and minor CSS adjustments
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -29,17 +29,17 @@ document.body.style.overflow = 'hidden'; // Fix scrolling
 document.body.appendChild(canvas);
 
 // Set up controls
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-controls.enablePan = false;
-controls.minDistance = 4;
-controls.maxDistance = 16;
-controls.update();
+// const controls = new OrbitControls(camera, canvas);
+// controls.enableDamping = true;
+// controls.enablePan = false;
+// controls.minDistance = 4;
+// controls.maxDistance = 400;
+// controls.update();
 
 // Render loop
 const onAnimationFrameHandler = (timeStamp: number) => {
-    controls.update();
-    renderer.render(scene, camera);
+    //controls.update();
+    renderer.render(scene, scene.camera);
     scene.update && scene.update(timeStamp);
     window.requestAnimationFrame(onAnimationFrameHandler);
 };
@@ -49,8 +49,8 @@ window.requestAnimationFrame(onAnimationFrameHandler);
 const windowResizeHandler = () => {
     const { innerHeight, innerWidth } = window;
     renderer.setSize(innerWidth, innerHeight);
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
+    scene.camera.aspect = innerWidth / innerHeight;
+    scene.camera.updateProjectionMatrix();
 };
 windowResizeHandler();
 window.addEventListener('resize', windowResizeHandler, false);
