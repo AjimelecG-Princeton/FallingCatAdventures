@@ -12,7 +12,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import FallingScene from './scenes/FallingScene';
 
 // Initialize core ThreeJS components
-const scene = new FallingScene();
+
 //const camera = new PerspectiveCamera();
 const renderer = new WebGLRenderer({ antialias: true });
 
@@ -23,6 +23,7 @@ const renderer = new WebGLRenderer({ antialias: true });
 // Set up renderer, canvas, and minor CSS adjustments
 renderer.setPixelRatio(window.devicePixelRatio);
 const canvas = renderer.domElement;
+const scene = new FallingScene(canvas);
 canvas.style.display = 'block'; // Removes padding below canvas
 document.body.style.margin = '0'; // Removes margin around page
 document.body.style.overflow = 'hidden'; // Fix scrolling

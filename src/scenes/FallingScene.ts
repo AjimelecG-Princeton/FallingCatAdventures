@@ -26,7 +26,7 @@ class FallingScene extends Scene {
         haloSpacing: number;
     };
 
-    constructor() {
+    constructor(domElement: HTMLElement) {
         // Call parent Scene() constructor
         super();
 
@@ -47,7 +47,7 @@ class FallingScene extends Scene {
         // Add meshes to scene
         const lights = new BasicLights();
         // Initialize the camera with the Cat object
-        this.camera = new GameCamera(this.state.cat);
+        this.camera = new GameCamera(this.state.cat, domElement);
         //const monkey = new Monkey(this);
 
         this.add(lights, this.state.cat);
@@ -64,8 +64,7 @@ class FallingScene extends Scene {
     }
 
     update(timeStamp: number): void {
-        const { rotationSpeed, updateList } = this.state;
-        this.rotation.y = (rotationSpeed * timeStamp) / 10000;
+        const { updateList } = this.state;
 
         // Call update for each object in the updateList
         for (const obj of updateList) {
