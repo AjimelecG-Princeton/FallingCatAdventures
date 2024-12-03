@@ -11,18 +11,25 @@ class Halo extends Group {
             './src/objects/Halo.gltf', 
             (gltf) => {
                 console.log('GLTF loaded successfully:', gltf);
+
+                // Scale the Halo object directly
+                gltf.scene.scale.set(0.03, 0.03, 0.03); // Adjust scale for Halo only
+
+                // Add the Halo object to the Halo group
                 this.add(gltf.scene);
+
+                // Add the Halo group to the main scene
                 scene.add(this);
-                scene.position.set(0, 0, 0); // Adjust position if needed
-                scene.rotateX(1.57);
-                scene.scale.set(.01, .01, .01);
+
+                // Optional: Adjust position or rotation of the Halo within its group
+                this.position.set(0, 0, 0);
+                this.rotateX(1.57);
             },
             undefined,
             (error) => {
                 console.error('Error loading Halo.gltf:', error);
             }
         );
-        
     }
 }
 
