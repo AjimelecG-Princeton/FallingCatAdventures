@@ -5,7 +5,7 @@ class GameControls {
     private cat: Cat;
     private moveSpeed: number = 0.1;
     private movementVector: Vector3 = new Vector3();
-    private readonly BOUNDARY_LIMIT = 10;
+    private readonly BOUNDARY_LIMIT = 13;
 
     private keysPressed: { [key: string]: boolean } = {
         'ArrowUp': false,
