@@ -1,9 +1,8 @@
 import dat from 'dat.gui';
 import { Scene, Color } from 'three';
 import BasicLights from '../lights/BasicLights';
-import Halo from '../objects/Halo';
-import Monkey from '../objects/Monkey';
-import Cat from '../objects/Cat';
+import Halo from '../objects/main/Halo';
+import Cat from '../objects/characters/Cat';
 import GameCamera from '../camera/GameCamera';
 import GameControls from '../game controls/GameControls';
 
@@ -51,8 +50,6 @@ class FallingScene extends Scene {
         // Initialize the camera with the Cat object
         this.camera = new GameCamera(this.state.cat, domElement);
         this.GameControls = new GameControls(this.state.cat);
-
-        //const monkey = new Monkey(this);
 
         this.add(lights, this.state.cat);
 

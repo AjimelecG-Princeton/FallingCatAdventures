@@ -1,5 +1,5 @@
 import { Vector3 } from 'three';
-import Cat from '../objects/Cat';
+import Cat from '../objects/characters/Cat';
 
 class GameControls {
     private cat: Cat;

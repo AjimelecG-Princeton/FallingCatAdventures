@@ -8,7 +8,7 @@ class Halo extends Group {
         const loader = new GLTFLoader();
 
         loader.load(
-            './src/objects/Halo.gltf', 
+            './src/objects/main/Halo.gltf', 
             (gltf) => {
                 console.log('GLTF loaded successfully:', gltf);
 

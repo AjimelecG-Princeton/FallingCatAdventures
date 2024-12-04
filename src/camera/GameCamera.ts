@@ -1,5 +1,5 @@
 import { MathUtils, PerspectiveCamera, Vector3 } from 'three';
-import Cat from '../objects/Cat';
+import Cat from '../objects/characters/Cat';
 
 class GameCamera extends PerspectiveCamera {
     private cat: Cat;
