@@ -10,6 +10,7 @@ import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import FallingScene from './scenes/FallingScene';
+import { HealthBar } from './objects/HealthBar';
 
 // Initialize core ThreeJS components
 const scene = new FallingScene();
@@ -27,6 +28,21 @@ canvas.style.display = 'block'; // Removes padding below canvas
 document.body.style.margin = '0'; // Removes margin around page
 document.body.style.overflow = 'hidden'; // Fix scrolling
 document.body.appendChild(canvas);
+
+const app = document.getElementById('app');
+if (app) {
+  // Create a new health bar
+  const healthBar = new HealthBar(100);
+
+  // Append it to the #app element
+  healthBar.appendTo('app');
+
+  // Simulate health changes
+  setTimeout(() => healthBar.setHealth(75), 1000);
+  setTimeout(() => healthBar.setHealth(50), 2000);
+  setTimeout(() => healthBar.setHealth(25), 3000);
+  setTimeout(() => healthBar.setHealth(0), 4000);
+}
 
 // Set up controls
 // const controls = new OrbitControls(camera, canvas);
