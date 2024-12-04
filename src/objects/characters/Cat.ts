@@ -25,7 +25,7 @@ class Cat extends Group {
 
                 // Position the cat at the starting point
                 this.position.set(0, 200, 0);
-                //this.rotateX(1.57);
+                this.rotateY(-1.57);
             },
             undefined,
             (error) => {
