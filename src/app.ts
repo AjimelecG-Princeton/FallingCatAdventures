@@ -28,20 +28,27 @@ document.body.style.margin = '0';
 document.body.style.overflow = 'hidden';
 document.body.appendChild(canvas);
 
-const app = document.getElementById('app');
-if (app) {
-  // Create a new health bar
-  const healthBar = new HealthBar(100);
 
-  // Append it to the #app element
-  healthBar.appendTo('app');
+// === Health Bar Integration === //
+const healthBar = new HealthBar(100);
 
-  // Simulate health changes
-  setTimeout(() => healthBar.setHealth(75), 1000);
-  setTimeout(() => healthBar.setHealth(50), 2000);
-  setTimeout(() => healthBar.setHealth(25), 3000);
-  setTimeout(() => healthBar.setHealth(0), 4000);
-}
+// Create a container for the health bar to position it relative to the canvas
+const healthBarContainer = document.createElement('div');
+healthBarContainer.style.position = 'absolute';
+healthBarContainer.style.top = '10px'; // Position it at the top of the canvas
+healthBarContainer.style.left = '10px';
+healthBarContainer.style.zIndex = '10'; // Ensure it appears above the canvas
+healthBarContainer.id = 'health-bar-container';
+document.body.appendChild(healthBarContainer);
+
+// Append the health bar to the container
+healthBar.appendTo('health-bar-container');
+
+// Simulate health changes for testing
+setTimeout(() => healthBar.setHealth(75), 1000);
+setTimeout(() => healthBar.setHealth(50), 2000);
+setTimeout(() => healthBar.setHealth(25), 3000);
+setTimeout(() => healthBar.setHealth(0), 4000);
 
 
 // === Render Loop === //
