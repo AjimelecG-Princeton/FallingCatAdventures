@@ -15,7 +15,7 @@ class Cat extends Group {
         const loader = new GLTFLoader();
 
         loader.load(
-            './src/objects/Cat.gltf',
+            './src/objects/characters/Cat.gltf',
             (gltf) => {
                 // Scale the object directly
                 gltf.scene.scale.set(.01, .01, .01); // Adjust for Cat only
