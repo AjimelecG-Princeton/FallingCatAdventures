@@ -5,6 +5,7 @@ import Halo from '../objects/Halo';
 import Monkey from '../objects/Monkey';
 import Cat from '../objects/Cat';
 import GameCamera from '../camera/GameCamera';
+import GameControls from '../game controls/GameControls';
 
 
 // Define an object type which describes each object in the update list
@@ -14,6 +15,7 @@ type UpdateChild = THREE.Object3D & {
 };
 
 class FallingScene extends Scene {
+    private GameControls: GameControls;
     camera: GameCamera;
     // Define the type of the state field
     state: {
@@ -48,6 +50,8 @@ class FallingScene extends Scene {
         const lights = new BasicLights();
         // Initialize the camera with the Cat object
         this.camera = new GameCamera(this.state.cat, domElement);
+        this.GameControls = new GameControls(this.state.cat);
+
         //const monkey = new Monkey(this);
 
         this.add(lights, this.state.cat);
@@ -74,6 +78,9 @@ class FallingScene extends Scene {
         }
         // Update the camera to follow the cat
         this.camera.update();
+
+        // Update the game controls
+        this.GameControls.update(1);
 
         // Generate new halos as the cat falls
         this.generateHalos();
