@@ -4,7 +4,7 @@ import BasicLights from '../lights/BasicLights';
 import Halo from '../objects/main/Halo';
 import Cat from '../objects/characters/Cat';
 import GameCamera from '../camera/GameCamera';
-import GameControls from '../game controls/GameControls';
+import GameControls from '../game_controls/GameControls';
 
 
 // Define an object type which describes each object in the update list
@@ -126,6 +126,22 @@ class FallingScene extends Scene {
                 halos.splice(index, 1);
             }
         });
+    }
+    public reset(): void {
+        // Reset cat position
+        this.state.cat.position.set(0, 200, 0);
+        
+        // Clear existing halos
+        this.state.halos.forEach(halo => {
+            this.remove(halo);
+        });
+        this.state.halos = [];
+        
+        // Reset halo generation parameters
+        this.state.firstHaloY = 180;
+        
+        // Reset any other game state variables
+        // Add any other reset logic needed
     }
 }
 

@@ -1,0 +1,120 @@
+.game-menu {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 15, 30, 0.9);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+}
+
+.menu-container {
+    max-width: 42rem;
+    padding: 2rem;
+    background-color: rgba(12, 53, 106, 0.8);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 15px rgba(0, 200, 255, 0.1);
+}
+
+.menu-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.game-menu h1 {
+    font-size: 2.25rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #279EFF;
+    text-shadow: 0 0 10px rgba(39, 158, 255, 0.3);
+}
+
+.game-menu h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #279EFF;
+    margin-bottom: 0.5rem;
+}
+
+.game-menu h3 {
+    font-weight: 600;
+    color: #279EFF;
+    margin-bottom: 0.5rem;
+}
+
+.game-menu p {
+    color: #c9e6ff;
+    line-height: 1.5;
+}
+
+.controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: rgba(20, 50, 70, 0.5);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(79, 209, 197, 0.2);
+}
+
+.game-menu ul {
+    color: #E6FFFA;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.game-menu li {
+    margin-bottom: 0.25rem;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 1rem;
+}
+
+.button-container button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 2rem;
+    background-color: #279EFF;
+    color: white;
+    border-radius: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(79, 209, 197, 0.2);
+}
+
+.button-container button:hover {
+    background-color: #008cff;
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(79, 209, 197, 0.4);
+}
+
+/* Add responsiveness for smaller screens */
+@media (max-width: 640px) {
+    .menu-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .controls-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .game-menu h1 {
+        font-size: 1.75rem;
+    }
+
+    .game-menu h2 {
+        font-size: 1.25rem;
+    }
+}
