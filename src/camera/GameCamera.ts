@@ -2,15 +2,24 @@ import { MathUtils, PerspectiveCamera, Vector3 } from 'three';
 import Cat from '../objects/Cat';
 
 class GameCamera extends PerspectiveCamera {
-    cat: Cat;
-    offset: Vector3;
-    lerpFactor: number;
-    rotationY: number;
-    isMouseDown: boolean;
-    mouseStartX: number;
-    domElement: HTMLElement;
+    private cat: Cat;
+    private lerpFactor: number;
+    private rotationX: number;
+    private rotationY: number;
+    private isMouseDown: boolean;
+    private mouseStartX: number;
+    private mouseStartY: number;
+    private readonly domElement: HTMLElement;
+    private readonly ROTATION_SPEED = 0.05;
+    private readonly CAMERA_DISTANCE = 30;
+    private readonly MIN_POLAR_ANGLE = 0;
+    private readonly MAX_POLAR_ANGLE = Math.PI * 0.15;
 
-  
+    // Reusable vectors to prevent garbage collection
+    private readonly baseOffset: Vector3;
+    private readonly rotatedOffset: Vector3;
+    private readonly desiredPosition: Vector3;
+
     constructor(
         cat: Cat,
         domElement: HTMLElement,
@@ -22,77 +31,85 @@ class GameCamera extends PerspectiveCamera {
         super(fov, aspect, near, far);
         this.cat = cat;
         this.domElement = domElement;
-        this.offset = new Vector3(0, 18, 0); // Adjust as needed
-        this.lerpFactor = 0.1; // Adjust between 0 and 1 for smoothing
-        this.rotationY = 0; // Initial rotation around Y-axis
+        
+        // Initialize camera position variables
+        this.lerpFactor = 0.2; // Increased for snappier response
+        this.rotationX = 0.1;
+        this.rotationY = 0;
         this.isMouseDown = false;
         this.mouseStartX = 0;
+        this.mouseStartY = 0;
 
-        // Initial camera position
-        const initialPosition = this.cat.position.clone().add(this.offset);
-        this.position.copy(initialPosition);
+        // Initialize reusable vectors
+        this.baseOffset = new Vector3(0, this.CAMERA_DISTANCE, 0);
+        this.rotatedOffset = new Vector3();
+        this.desiredPosition = new Vector3();
 
-        // Initial camera orientation
-        this.lookAt(this.cat.position.clone().add(this.offset));
-
-        // Add event listeners for mouse interaction
+        this.updateCameraPosition();
         this.addEventListeners();
-
     }
 
-    addEventListeners(): void {
+    private updateCameraPosition(): void {
+        // Reuse vectors instead of creating new ones
+        this.rotatedOffset.copy(this.baseOffset);
+
+        // Apply rotations
+        this.rotatedOffset.applyAxisAngle(new Vector3(1, 0, 0), this.rotationX);
+        this.rotatedOffset.applyAxisAngle(new Vector3(0, 1, 0), this.rotationY);
+
+        // Calculate desired position
+        this.desiredPosition.copy(this.cat.position).add(this.rotatedOffset);
+        
+        // Update camera position with optimized lerp
+        this.position.lerp(this.desiredPosition, this.lerpFactor);
+        this.lookAt(this.cat.position);
+    }
+
+    private addEventListeners(): void {
         this.domElement.addEventListener('mousedown', this.onMouseDown);
         this.domElement.addEventListener('mousemove', this.onMouseMove);
         this.domElement.addEventListener('mouseup', this.onMouseUp);
         this.domElement.addEventListener('mouseleave', this.onMouseUp);
     }
 
-    onMouseDown = (event: MouseEvent): void => {
+    private onMouseDown = (event: MouseEvent): void => {
         event.preventDefault();
-        console.log('Mouse down');
         this.isMouseDown = true;
         this.mouseStartX = event.clientX;
+        this.mouseStartY = event.clientY;
     };
-    //TODO: FIX MOUSE CONTROLS
-    onMouseMove = (event: MouseEvent): void => {
+
+    private onMouseMove = (event: MouseEvent): void => {
         if (this.isMouseDown) {
             event.preventDefault();
+            
+            // Calculate mouse movement
             const deltaX = event.clientX - this.mouseStartX;
-            const rotationSpeed = 0.005; // Adjust rotation speed as needed
-            this.rotationY -= deltaX * rotationSpeed;
-            console.log('Mouse move', 'deltaX:', deltaX, 'rotationY:', this.rotationY);
-            this.rotationY = MathUtils.clamp(this.rotationY, -Math.PI / 2, Math.PI / 2);
+            const deltaY = event.clientY - this.mouseStartY;
+            
+            // Update rotations with frame-independent movement
+            const frameScale = 1 / (1 + performance.now() % 16.67); // Compensate for frame timing
+            this.rotationY -= deltaX * this.ROTATION_SPEED * frameScale;
+            this.rotationX = MathUtils.clamp(
+                this.rotationX + (deltaY * this.ROTATION_SPEED * frameScale),
+                this.MIN_POLAR_ANGLE,
+                this.MAX_POLAR_ANGLE
+            );
+            
             this.mouseStartX = event.clientX;
+            this.mouseStartY = event.clientY;
         }
     };
-    
-    onMouseUp = (): void => {
-        console.log('Mouse up');
+
+    private onMouseUp = (): void => {
         this.isMouseDown = false;
     };
-    
 
-    update(): void {
-        const desiredPosition = this.cat.position.clone();
-
-        // Apply rotation around the Y-axis to the offset
-        const rotatedOffset = this.offset.clone().applyAxisAngle(
-            new Vector3(0, 1, 0),
-            this.rotationY
-        );
-
-        // Calculate the new camera position
-        desiredPosition.add(rotatedOffset);
-
-        // Smoothly interpolate the camera's position towards the desired position
-        this.position.lerp(desiredPosition, this.lerpFactor);
-
-        // Ensure the camera looks at the cat
-        this.lookAt(this.cat.position);
+    public update(): void {
+        this.updateCameraPosition();
     }
 
-    dispose(): void {
-        // Remove event listeners when disposing of the camera
+    public dispose(): void {
         this.domElement.removeEventListener('mousedown', this.onMouseDown);
         this.domElement.removeEventListener('mousemove', this.onMouseMove);
         this.domElement.removeEventListener('mouseup', this.onMouseUp);
