@@ -1,30 +1,68 @@
 // Cat.ts
-import { Group } from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { Group, BufferGeometry, Mesh, MeshStandardMaterial, CylinderGeometry, DoubleSide, SphereGeometry, BoxGeometry} from 'three';
+// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 class Cat extends Group {
     velocity: number;
     groundLevel: number;
 
+    mesh: Mesh | null = null;
+    geometry: BufferGeometry | null = null;
+
+
     constructor(scene: THREE.Scene) {
         super();
 
         this.velocity = -0.1; // Falling speed
-        this.groundLevel = -50; // Y-coordinate where the ground is
+        this.groundLevel = -5000; // Y-coordinate where the ground is
 
         const loader = new GLTFLoader();
+
+        const radius = 1;
+        const height = 2;
+
+        const widthSegments = 32;
+        const heightSegments = 32;
+
+        // parameters: radius, widthsegments, heightsegments
+        const sphereHitbox = new SphereGeometry(radius, widthSegments, heightSegments);
+        
+        // Alternate hitbox options: cylinder, box
+        // parameters: radius_top, radius_bottom, height, radialsegments, heightsegments, open_ended
+        //const cylinderHitbox = new CylinderGeometry( radius, radius, height, 4, 2, false); 
+        // parameters: width, height, depth, widthseg, heightseg, depthseg
+        //const boxHitBox = new BoxGeometry(1.5, 1.5, 1.5, 8, 8, 8);
+        const material = new MeshStandardMaterial({
+            color: 0xff000,
+            side: DoubleSide,
+            transparent: true,
+            opacity: 0.8,
+        })
+
+
 
         loader.load(
             './src/objects/characters/Cat.gltf',
             (gltf) => {
                 // Scale the object directly
                 gltf.scene.scale.set(.01, .01, .01); // Adjust for Cat only
+                
+
+                this.mesh = new Mesh(sphereHitbox, material);
+                // Alternate hitboxes
+                // this.mesh = new Mesh(cylinderHitbox, material);
+                // this.mesh = new Mesh(boxHitBox, material);
+                this.geometry = this.mesh.geometry;
+
+                this.add(this.mesh);
+                
                 // Add the object to the group
                 this.add(gltf.scene);
                 scene.add(this);
 
                 // Position the cat at the starting point
-                this.position.set(0, 200, 0);
+                this.position.set(0, 0, 0);
                 this.rotateY(-1.57);
             },
             undefined,
