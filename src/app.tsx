@@ -15,13 +15,13 @@ import { createRoot } from 'react-dom/client';
 let isGameRunning = false;
 let animationFrameId: number;
 
-// === Renderer Setup === //
-const renderer = new WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(window.devicePixelRatio);
-const canvas = renderer.domElement;
 
 // === Scene Setup === //
-const scene = new FallingScene(canvas);
+const scene = new FallingScene();
+
+// === Renderer Setup === //
+const renderer = scene.renderer;
+const canvas = renderer.domElement;
 
 // Apply basic css styles
 canvas.style.display = 'none'; // Hide canvas initially

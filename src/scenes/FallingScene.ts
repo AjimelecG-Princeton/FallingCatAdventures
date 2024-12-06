@@ -1,5 +1,6 @@
 import dat from 'dat.gui';
-import { Scene, Color, Raycaster, Vector3, Mesh, ArrowHelper } from 'three';
+import { Scene, Color, Raycaster, Vector3, Mesh, ArrowHelper, PlaneGeometry, MeshBasicMaterial } from 'three';
+import * as THREE from 'three';
 import BasicLights from '../lights/BasicLights';
 import Halo from '../objects/main/Halo';
 import Cat from '../objects/characters/Cat';
@@ -15,6 +16,7 @@ type UpdateChild = THREE.Object3D & {
 class FallingScene extends Scene {
     private GameControls: GameControls;
     camera: GameCamera;
+    renderer;
     // Define the type of the state field
     state: {
         gui: dat.GUI;
@@ -27,9 +29,15 @@ class FallingScene extends Scene {
         buffer: boolean; // buffer is true upon first hitting a halo, giving temporary immunity from further extraneous intersections
     };
 
-    constructor(domElement: HTMLElement) {
+    constructor() {
         // Call parent Scene() constructor
         super();
+
+        this.renderer = new THREE.WebGLRenderer();
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+
+        this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+        const domElement = this.renderer.domElement;
 
         // Init state
         this.state = {
@@ -51,7 +59,14 @@ class FallingScene extends Scene {
         // Initialize the camera with the Cat object
         this.camera = new GameCamera(this.state.cat, domElement);
         this.GameControls = new GameControls(this.state.cat);
+        const planeGeometry = new PlaneGeometry(1000, 1000, 50, 50);
+        const material = this.loadMaterial_("others_0020_1k_wSx9VH/others_0020_", 2);
+        const plane = new Mesh(planeGeometry, material);
+        plane.position.set(0, -1, 0);
+        plane.rotation.x = (-90 / 180) * Math.PI;
+        this.add(plane);
 
+       
         this.add(lights, this.state.cat);
 
         // Add the cat to the update list
@@ -237,6 +252,57 @@ class FallingScene extends Scene {
         // Reset any other game state variables
         // Add any other reset logic needed
     }
+
+    loadMaterial_(name:String, tiling:number) {
+        const mapLoader = new THREE.TextureLoader();
+        const maxAnisotropy = this.renderer.capabilities.getMaxAnisotropy();
+    
+        const color =  mapLoader.load('textures/' + name + 'color_1k.jpg');
+        color.anisotropy = maxAnisotropy;
+        color.wrapS = THREE.RepeatWrapping;
+        color.wrapT = THREE.RepeatWrapping;
+        color.repeat.set(tiling, tiling);
+        color.colorSpace = THREE.SRGBColorSpace;
+    
+        const normalMap =  mapLoader.load('textures/' + name + 'normal_opengl_1k.png');
+        normalMap.anisotropy = maxAnisotropy;
+        normalMap.wrapS = THREE.RepeatWrapping;
+        normalMap.wrapT = THREE.RepeatWrapping;
+        normalMap.repeat.set(tiling, tiling);
+    
+        const roughnessMap =  mapLoader.load('textures/' + name + 'roughness_1k.jpg');
+        roughnessMap.anisotropy = maxAnisotropy;
+        roughnessMap.wrapS = THREE.RepeatWrapping;
+        roughnessMap.wrapT = THREE.RepeatWrapping;
+        roughnessMap.repeat.set(tiling, tiling);
+    
+        const aoMap =  mapLoader.load('textures/' + name + 'ao_1k.jpg');
+        aoMap.anisotropy = maxAnisotropy;
+        aoMap.wrapS = THREE.RepeatWrapping;
+        aoMap.wrapT = THREE.RepeatWrapping;
+        aoMap.repeat.set(tiling, tiling);
+        
+        const displacementMap =  mapLoader.load('textures/' + name + 'height_1k.png');
+        displacementMap.anisotropy = maxAnisotropy;
+        displacementMap.wrapS = THREE.RepeatWrapping;
+        displacementMap.wrapT = THREE.RepeatWrapping;
+        displacementMap.repeat.set(tiling, tiling);
+        
+    
+    
+        const material = new THREE.MeshStandardMaterial({
+            map: color,
+            normalMap: normalMap,
+            roughnessMap: roughnessMap,
+            aoMap: aoMap,
+            displacementMap: displacementMap,
+        });
+
+        console.log(color, normalMap, roughnessMap, aoMap, displacementMap);
+    
+        return material;
+    }
+
 }
 
 export default FallingScene;
