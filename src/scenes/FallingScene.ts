@@ -19,7 +19,7 @@ class FallingScene extends Scene {
     renderer;
     // Define the type of the state field
     state: {
-        gui: dat.GUI;
+        //gui: dat.GUI;
         rotationSpeed: number;
         updateList: UpdateChild[];
         cat: Cat;
@@ -41,7 +41,7 @@ class FallingScene extends Scene {
 
         // Init state
         this.state = {
-            gui: new dat.GUI(), // Create GUI for scene
+            //gui: new dat.GUI(), // Create GUI for scene
             rotationSpeed: 1,
             updateList: [],
             cat: new Cat(this),
@@ -73,7 +73,7 @@ class FallingScene extends Scene {
         this.addToUpdateList(this.state.cat);
 
         // Populate GUI
-        this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
+        //this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
     }
 
     addToUpdateList(object: UpdateChild): void {
@@ -257,48 +257,85 @@ class FallingScene extends Scene {
         const mapLoader = new THREE.TextureLoader();
         const maxAnisotropy = this.renderer.capabilities.getMaxAnisotropy();
     
-        const color =  mapLoader.load('textures/' + name + 'color_1k.jpg');
-        color.anisotropy = maxAnisotropy;
-        color.wrapS = THREE.RepeatWrapping;
-        color.wrapT = THREE.RepeatWrapping;
-        color.repeat.set(tiling, tiling);
-        color.colorSpace = THREE.SRGBColorSpace;
-    
-        const normalMap =  mapLoader.load('textures/' + name + 'normal_opengl_1k.png');
-        normalMap.anisotropy = maxAnisotropy;
-        normalMap.wrapS = THREE.RepeatWrapping;
-        normalMap.wrapT = THREE.RepeatWrapping;
-        normalMap.repeat.set(tiling, tiling);
-    
-        const roughnessMap =  mapLoader.load('textures/' + name + 'roughness_1k.jpg');
-        roughnessMap.anisotropy = maxAnisotropy;
-        roughnessMap.wrapS = THREE.RepeatWrapping;
-        roughnessMap.wrapT = THREE.RepeatWrapping;
-        roughnessMap.repeat.set(tiling, tiling);
-    
-        const aoMap =  mapLoader.load('textures/' + name + 'ao_1k.jpg');
-        aoMap.anisotropy = maxAnisotropy;
-        aoMap.wrapS = THREE.RepeatWrapping;
-        aoMap.wrapT = THREE.RepeatWrapping;
-        aoMap.repeat.set(tiling, tiling);
-        
-        const displacementMap =  mapLoader.load('textures/' + name + 'height_1k.png');
-        displacementMap.anisotropy = maxAnisotropy;
-        displacementMap.wrapS = THREE.RepeatWrapping;
-        displacementMap.wrapT = THREE.RepeatWrapping;
-        displacementMap.repeat.set(tiling, tiling);
-        
-    
+        // Add lights to the scene if not already present
+        if (!this.state) {
+            const lights = new BasicLights();
+            this.add(lights);
+        }
     
         const material = new THREE.MeshStandardMaterial({
-            map: color,
-            normalMap: normalMap,
-            roughnessMap: roughnessMap,
-            aoMap: aoMap,
-            displacementMap: displacementMap,
+            roughness: 0.7,
+            metalness: 0.0,
         });
-
-        console.log(color, normalMap, roughnessMap, aoMap, displacementMap);
+    
+        // Load textures with proper error handling and configuration
+        mapLoader.load(
+            'src/textures/' + name + 'color_1k.jpg',
+            (texture) => {
+                texture.anisotropy = maxAnisotropy;
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(tiling, tiling);
+                texture.colorSpace = THREE.SRGBColorSpace;
+                material.map = texture;
+                material.needsUpdate = true;
+            },
+            undefined,
+            (error) => console.error('Error loading color texture:', error)
+        );
+    
+        mapLoader.load(
+            'src/textures/' + name + 'normal_opengl_1k.png',
+            (texture) => {
+                texture.anisotropy = maxAnisotropy;
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(tiling, tiling);
+                material.normalMap = texture;
+                material.needsUpdate = true;
+            },
+            undefined,
+            (error) => console.error('Error loading normal map:', error)
+        );
+    
+        mapLoader.load(
+            'src/textures/' + name + 'roughness_1k.jpg',
+            (texture) => {
+                texture.anisotropy = maxAnisotropy;
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(tiling, tiling);
+                material.roughnessMap = texture;
+                material.needsUpdate = true;
+            },
+            undefined,
+            (error) => console.error('Error loading roughness map:', error)
+        );
+    
+        mapLoader.load(
+            'src/textures/' + name + 'ao_1k.jpg',
+            (texture) => {
+                texture.anisotropy = maxAnisotropy;
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(tiling, tiling);
+                material.aoMap = texture;
+                material.aoMapIntensity = 1.0;
+                material.needsUpdate = true;
+            },
+            undefined,
+            (error) => console.error('Error loading AO map:', error)
+        );
+    
+        mapLoader.load(
+            'src/textures/' + name + 'height_1k.png',
+            (texture) => {
+                texture.anisotropy = maxAnisotropy;
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(tiling, tiling);
+                material.displacementMap = texture;
+                material.displacementScale = 0.2; // Adjust this value as needed
+                material.needsUpdate = true;
+            },
+            undefined,
+            (error) => console.error('Error loading displacement map:', error)
+        );
     
         return material;
     }
