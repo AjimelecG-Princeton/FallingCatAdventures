@@ -59,8 +59,8 @@ class FallingScene extends Scene {
         // Initialize the camera with the Cat object
         this.camera = new GameCamera(this.state.cat, domElement);
         this.GameControls = new GameControls(this.state.cat);
-        const planeGeometry = new PlaneGeometry(1000, 1000, 50, 50);
-        const material = this.loadMaterial_("others_0020_1k_wSx9VH/others_0020_", 2);
+        const planeGeometry = new PlaneGeometry(1500, 1500, 100, 100);
+        const material = this.loadMaterial_("others_0020_1k_wSx9VH/others_0020_", 5);
         const plane = new Mesh(planeGeometry, material);
         plane.position.set(0, -1, 0);
         plane.rotation.x = (-90 / 180) * Math.PI;
