@@ -59,8 +59,8 @@ class FallingScene extends Scene {
         // Initialize the camera with the Cat object
         this.camera = new GameCamera(this.state.cat, domElement);
         this.GameControls = new GameControls(this.state.cat);
-        const planeGeometry = new PlaneGeometry(1500, 1500, 100, 100);
-        const material = this.loadMaterial_("others_0020_1k_wSx9VH/others_0020_", 5);
+        const planeGeometry = new PlaneGeometry(1500, 1500, 50, 50);
+        const material = this.loadMaterial_("Water_002_SD/Water_002_", 10);
         const plane = new Mesh(planeGeometry, material);
         plane.position.set(0, -1, 0);
         plane.rotation.x = (-90 / 180) * Math.PI;
@@ -270,7 +270,7 @@ class FallingScene extends Scene {
     
         // Load textures with proper error handling and configuration
         mapLoader.load(
-            'src/textures/' + name + 'color_1k.jpg',
+            'src/textures/' + name + 'COLOR.jpg',
             (texture) => {
                 texture.anisotropy = maxAnisotropy;
                 texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -284,7 +284,7 @@ class FallingScene extends Scene {
         );
     
         mapLoader.load(
-            'src/textures/' + name + 'normal_opengl_1k.png',
+            'src/textures/' + name + 'NORM.jpg',
             (texture) => {
                 texture.anisotropy = maxAnisotropy;
                 texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -297,7 +297,7 @@ class FallingScene extends Scene {
         );
     
         mapLoader.load(
-            'src/textures/' + name + 'roughness_1k.jpg',
+            'src/textures/' + name + 'ROUGH.jpg',
             (texture) => {
                 texture.anisotropy = maxAnisotropy;
                 texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -310,7 +310,7 @@ class FallingScene extends Scene {
         );
     
         mapLoader.load(
-            'src/textures/' + name + 'ao_1k.jpg',
+            'src/textures/' + name + 'OCC.jpg',
             (texture) => {
                 texture.anisotropy = maxAnisotropy;
                 texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -324,7 +324,7 @@ class FallingScene extends Scene {
         );
     
         mapLoader.load(
-            'src/textures/' + name + 'height_1k.png',
+            'src/textures/' + name + 'DISP.png',
             (texture) => {
                 texture.anisotropy = maxAnisotropy;
                 texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
