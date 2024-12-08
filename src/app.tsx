@@ -20,15 +20,6 @@ const renderer = new WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
 const canvas = renderer.domElement;
 
-// === Scene Setup === //
-const scene = new FallingScene(canvas);
-
-// Apply basic css styles
-canvas.style.display = 'none'; // Hide canvas initially
-document.body.style.margin = '0';
-document.body.style.overflow = 'hidden';
-document.body.appendChild(canvas);
-
 // === Health Bar Setup === //
 const healthBar = new HealthBar(100);
 const healthBarContainer = document.createElement('div');
@@ -40,6 +31,15 @@ healthBarContainer.style.display = 'none'; // Hide health bar initially
 healthBarContainer.id = 'health-bar-container';
 document.body.appendChild(healthBarContainer);
 healthBar.appendTo('health-bar-container');
+
+// === Scene Setup === //
+const scene = new FallingScene(canvas, healthBar);
+
+// Apply basic css styles
+canvas.style.display = 'none'; // Hide canvas initially
+document.body.style.margin = '0';
+document.body.style.overflow = 'hidden';
+document.body.appendChild(canvas);
 
 // === Menu Setup === //
 const menuContainer = document.createElement('div');
@@ -56,6 +56,9 @@ const startGame = () => {
     // Reset game state if needed
     scene.reset(); // You'll need to implement this in FallingScene
     healthBar.setHealth(100);
+
+    // Start the health bar decreasing over time (e.g., 0.1% every 100ms)
+    healthBar.decreaseHealthOverTime(0.2, 100);
     
     // Start the game loop
     if (!animationFrameId) {
@@ -74,6 +77,9 @@ const pauseGame = () => {
         window.cancelAnimationFrame(animationFrameId);
         animationFrameId = 0;
     }
+
+    // Stop the health bar decreasing when the game is paused
+    healthBar.stopDecreasingHealth();
 };
 
 // === Render Loop === //

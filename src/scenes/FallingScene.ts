@@ -5,6 +5,7 @@ import Halo from '../objects/main/Halo';
 import Cat from '../objects/characters/Cat';
 import GameCamera from '../camera/GameCamera';
 import GameControls from '../game_controls/GameControls';
+import { HealthBar } from '../objects/main/HealthBar';
 
 // Define an object type which describes each object in the update list
 type UpdateChild = THREE.Object3D & {
@@ -25,9 +26,10 @@ class FallingScene extends Scene {
         firstHaloY: number;
         haloSpacing: number;
         buffer: boolean; // buffer is true upon first hitting a halo, giving temporary immunity from further extraneous intersections
+        healthBar: HealthBar;
     };
 
-    constructor(domElement: HTMLElement) {
+    constructor(domElement: HTMLElement, healthBar: HealthBar) {
         // Call parent Scene() constructor
         super();
 
@@ -41,6 +43,7 @@ class FallingScene extends Scene {
             firstHaloY: 180, // Starting position of the first halo
             haloSpacing: 30, // Vertical spacing between halo
             buffer: false,
+            healthBar: healthBar,
         };
 
         // Set background to a nice color
@@ -70,6 +73,7 @@ class FallingScene extends Scene {
     handleCollision() : void {
         this.state.buffer = true;
         alert('COLLISION COLLISION!');
+        this.state.healthBar.setHealth(this.state.healthBar.getHealthPercentage() + 10);
         setTimeout(() => {
             this.state.buffer = false;
         }, 1000)
