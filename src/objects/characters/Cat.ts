@@ -11,11 +11,11 @@ class Cat extends Group {
     geometry: BufferGeometry | null = null;
 
 
-    constructor(scene: THREE.Scene) {
+    constructor(scene: THREE.Scene, groundLevel: number) {
         super();
 
         this.velocity = -0.1; // Falling speed
-        this.groundLevel = -5000; // Y-coordinate where the ground is
+        this.groundLevel = groundLevel // Y-coordinate where the ground is
 
         const loader = new GLTFLoader();
 

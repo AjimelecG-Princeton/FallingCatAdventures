@@ -6,6 +6,7 @@ import Cat from '../objects/characters/Cat';
 import GameCamera from '../camera/GameCamera';
 import GameControls from '../game_controls/GameControls';
 import { HealthBar } from '../objects/main/HealthBar';
+import BackgroundIslands from '../objects/islands/BackgroundIslands';
 
 // Define an object type which describes each object in the update list
 type UpdateChild = THREE.Object3D & {
@@ -16,11 +17,14 @@ type UpdateChild = THREE.Object3D & {
 class FallingScene extends Scene {
     private GameControls: GameControls;
     camera: GameCamera;
+    // Define ground level 
+    public static readonly GROUND_LEVEL = -5000;
     // Define the type of the state field
     state: {
         gui: dat.GUI;
         rotationSpeed: number;
         updateList: UpdateChild[];
+        backgroundIslands: BackgroundIslands;
         cat: Cat;
         halos: Halo[];
         firstHaloY: number;
@@ -38,7 +42,8 @@ class FallingScene extends Scene {
             gui: new dat.GUI(), // Create GUI for scene
             rotationSpeed: 1,
             updateList: [],
-            cat: new Cat(this),
+            backgroundIslands: new BackgroundIslands(FallingScene.GROUND_LEVEL), 
+            cat: new Cat(this, FallingScene.GROUND_LEVEL),
             halos: [],
             firstHaloY: 180, // Starting position of the first halo
             haloSpacing: 30, // Vertical spacing between halo
@@ -55,7 +60,8 @@ class FallingScene extends Scene {
         this.camera = new GameCamera(this.state.cat, domElement);
         this.GameControls = new GameControls(this.state.cat);
 
-        this.add(lights, this.state.cat);
+
+        this.add(lights, this.state.cat, this.state.backgroundIslands);
 
         // Add the cat to the update list
         this.addToUpdateList(this.state.cat);
@@ -177,6 +183,9 @@ class FallingScene extends Scene {
 
         // check if the cat has collided with any objects
         this.detectCollision();
+
+        // Update background islands
+        this.state.backgroundIslands.update(this.state.cat.position.y);
     }
 
     generateHalos(): void {
@@ -237,6 +246,8 @@ class FallingScene extends Scene {
         
         // Reset halo generation parameters
         this.state.firstHaloY = 180;
+
+        this.state.backgroundIslands.reset();
         
         // Reset any other game state variables
         // Add any other reset logic needed
