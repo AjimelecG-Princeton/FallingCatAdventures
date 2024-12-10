@@ -19,7 +19,7 @@ export class HaloManager {
         return y > (this.groundLevel + this.STOP_GENERATION_BUFFER);
     }
 
-    generateHalo(catY: number): void {
+    generateHalo(catY: number): Halo | null{
         const lastHaloY = this.halos.length > 0
             ? this.halos[this.halos.length - 1].position.y
             : catY + 50;
@@ -33,7 +33,9 @@ export class HaloManager {
             
             this.halos.push(newHalo);
             this.firstHaloY -= this.haloSpacing;
+            return newHalo;
         }
+        return null;
     }
 
     removePassedHalos(catY: number): void {

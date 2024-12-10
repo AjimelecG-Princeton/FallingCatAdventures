@@ -1,6 +1,4 @@
-// Cat.ts
 import { Group, BufferGeometry, Mesh, MeshStandardMaterial, CylinderGeometry, DoubleSide, SphereGeometry, BoxGeometry} from 'three';
-// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 class Cat extends Group {
@@ -19,7 +17,7 @@ class Cat extends Group {
 
         const loader = new GLTFLoader();
 
-        const radius = 1;
+        const radius = .5;
         const height = 2;
 
         const widthSegments = 32;
@@ -30,14 +28,14 @@ class Cat extends Group {
         
         // Alternate hitbox options: cylinder, box
         // parameters: radius_top, radius_bottom, height, radialsegments, heightsegments, open_ended
-        //const cylinderHitbox = new CylinderGeometry( radius, radius, height, 4, 2, false); 
+        const cylinderHitbox = new CylinderGeometry( radius, radius, height, 16, 8, false); 
         // parameters: width, height, depth, widthseg, heightseg, depthseg
         //const boxHitBox = new BoxGeometry(1.5, 1.5, 1.5, 8, 8, 8);
         const material = new MeshStandardMaterial({
             color: 0xff000,
             side: DoubleSide,
             transparent: true,
-            opacity: 0.8,
+            opacity: 0,
         })
 
 
@@ -49,9 +47,9 @@ class Cat extends Group {
                 gltf.scene.scale.set(.01, .01, .01); // Adjust for Cat only
                 
 
-                this.mesh = new Mesh(sphereHitbox, material);
+                // this.mesh = new Mesh(sphereHitbox, material);
                 // Alternate hitboxes
-                // this.mesh = new Mesh(cylinderHitbox, material);
+                this.mesh = new Mesh(cylinderHitbox, material);
                 // this.mesh = new Mesh(boxHitBox, material);
                 this.geometry = this.mesh.geometry;
 

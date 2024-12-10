@@ -25,8 +25,8 @@ class Halo extends Group {
             color: 0xffff00,
             side: DoubleSide,
             transparent: true,
-            opacity: 0.8,
-        });
+            opacity: 0,
+        })
 
         loader.load(
             './src/objects/main/Halo.gltf', 
