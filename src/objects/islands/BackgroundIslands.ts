@@ -102,7 +102,7 @@ class BackgroundIslands extends Group {
             const { x, z } = this.getRandomPosition(y);
             
             // Add some random rotation and slight y-position variation
-            island.position.set(x, y + (Math.random() * 20 - 10), z);
+            island.position.set(x, y + (Math.random() * 40 - 10), z);
             island.rotation.y = Math.random() * Math.PI * 2;
             
             // Add slight random tilt
