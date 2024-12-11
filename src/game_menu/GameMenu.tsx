@@ -34,10 +34,11 @@ const GameMenu: FC<GameMenuProps> = ({ onStartGame }) => {
                 </ul>
               </div>
               <div>
-                <h3>Camera</h3>
-                <p>
-                  Click and drag with the mouse to rotate the camera view around your cat
-                </p>
+                <h3>Camera & Game</h3>
+                <ul>
+                  <li>Mouse - Rotate camera view</li>
+                  <li>ESC - Return to menu</li>
+                </ul>
               </div>
             </div>
           </section>

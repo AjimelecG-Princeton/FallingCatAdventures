@@ -3,11 +3,14 @@ export class HealthBar {
     private maxHealth: number;
     private container: HTMLElement;
     private intervalId: number | null = null; // Store the interval ID for clearing
+    private onHealthDepleted: () => void;
 
-    constructor(maxHealth: number) {
+
+    constructor(maxHealth: number, onHealthDepleted : () => void) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.container = this.createHealthBarElement();
+        this.onHealthDepleted = onHealthDepleted;
     }
 
     // Set health (between 0 and maxHealth)
@@ -71,6 +74,9 @@ export class HealthBar {
     // Decrease health by a certain amount
     decreaseHealth(amount: number): void {
         this.setHealth(this.health - amount);
+        if (this.health <= 0) {
+            this.onHealthDepleted();
+        }
     }
 
     // Start decreasing health over time

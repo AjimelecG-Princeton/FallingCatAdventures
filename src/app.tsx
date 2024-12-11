@@ -8,20 +8,68 @@ import { WebGLRenderer } from 'three';
 import FallingScene from './scenes/FallingScene';
 import { HealthBar } from './objects/main/HealthBar';
 import GameMenu from './game_menu/GameMenu';
+import GameOverMenu from './gameover_menu/GameOverMenu';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 // === Game State === //
 let isGameRunning = false;
 let animationFrameId: number;
+let score = 0; // TEMPORARY
+let gameOverMenuContainer: HTMLDivElement;
 
 // === Renderer Setup === //
 const renderer = new WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
 const canvas = renderer.domElement;
 
+// === Game Over Handling === //
+const handleGameOver = () => {
+    isGameRunning = false;
+    canvas.style.display = 'none';
+    healthBarContainer.style.display = 'none';
+    gameOverMenuContainer.style.display = 'block';
+    
+    // Stop the game loop
+    if (animationFrameId) {
+        window.cancelAnimationFrame(animationFrameId);
+        animationFrameId = 0;
+    }
+
+    // Render the game over menu
+    const gameOverRoot = createRoot(gameOverMenuContainer);
+    gameOverRoot.render(
+        <GameOverMenu 
+            score={score} 
+            onRestart={handleRestart} // Use handleRestart instead of startGame
+        />
+    );
+};
+const handleRestart = () => {
+    // Clean up old game over menu
+    while (gameOverMenuContainer.firstChild) {
+        gameOverMenuContainer.removeChild(gameOverMenuContainer.firstChild);
+    }
+    
+    // Reset all game states
+    isGameRunning = false;
+    score = 0;
+    
+    // Stop any existing game loop
+    if (animationFrameId) {
+        window.cancelAnimationFrame(animationFrameId);
+        animationFrameId = 0;
+    }
+
+    // Stop health decrease
+    healthBar.stopDecreasingHealth();
+    
+    // Start fresh game
+    startGame();
+};
+
 // === Health Bar Setup === //
-const healthBar = new HealthBar(100);
+const healthBar = new HealthBar(100, handleGameOver);
 const healthBarContainer = document.createElement('div');
 healthBarContainer.style.position = 'absolute';
 healthBarContainer.style.top = '10px';
@@ -32,8 +80,13 @@ healthBarContainer.id = 'health-bar-container';
 document.body.appendChild(healthBarContainer);
 healthBar.appendTo('health-bar-container');
 
+// === Update Score === //
+const updateScore = (points: number) => {
+    score += points;
+};
+
 // === Scene Setup === //
-const scene = new FallingScene(canvas, healthBar);
+const scene = new FallingScene(canvas, healthBar, updateScore);
 
 // Apply basic css styles
 canvas.style.display = 'none'; // Hide canvas initially
@@ -46,15 +99,23 @@ const menuContainer = document.createElement('div');
 menuContainer.id = 'menu-container';
 document.body.appendChild(menuContainer);
 
+// === Menu Over Setup === //
+gameOverMenuContainer = document.createElement('div');
+gameOverMenuContainer.id = 'game-over-menu-container';
+gameOverMenuContainer.style.display = 'none';
+document.body.appendChild(gameOverMenuContainer);
+
 // === Game Control Functions === //
 const startGame = () => {
     isGameRunning = true;
+    score = 0;
     canvas.style.display = 'block';
     healthBarContainer.style.display = 'block';
     menuContainer.style.display = 'none';
+    gameOverMenuContainer.style.display = 'none';
     
     // Reset game state if needed
-    scene.reset(); // You'll need to implement this in FallingScene
+    scene.reset();
     healthBar.setHealth(100);
 
     // Start the health bar decreasing over time (e.g., 0.1% every 100ms)
@@ -66,7 +127,7 @@ const startGame = () => {
     }
 };
 
-const pauseGame = () => {
+const resetGame = () => {
     isGameRunning = false;
     canvas.style.display = 'none';
     healthBarContainer.style.display = 'none';
@@ -81,6 +142,7 @@ const pauseGame = () => {
     // Stop the health bar decreasing when the game is paused
     healthBar.stopDecreasingHealth();
 };
+
 
 // === Render Loop === //
 const onAnimationFrameHandler = (timeStamp: number) => {
@@ -104,7 +166,7 @@ window.addEventListener('resize', windowResizeHandler, false);
 // === Keyboard Controls === //
 window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && isGameRunning) {
-        pauseGame();
+        resetGame();
     }
 });
 

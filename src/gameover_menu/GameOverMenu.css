@@ -1,0 +1,79 @@
+.game-over-menu {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 15, 30, 0.95);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.game-over-menu .menu-container {
+    max-width: 32rem;
+    padding: 2rem;
+    background-color: rgba(12, 53, 106, 0.8);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 15px rgba(255, 50, 50, 0.2);
+}
+
+.game-over-menu .menu-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.game-over-menu h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #279EFF;
+    text-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
+}
+
+.game-over-menu h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #279EFF;
+    margin-bottom: 0.5rem;
+}
+
+.game-over-menu p {
+    color: #c9e6ff;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.score-section {
+    text-align: center;
+}
+
+.score-display {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+    margin: 1rem 0;
+}
+
+@media (max-width: 640px) {
+    .game-over-menu .menu-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .game-over-menu h1 {
+        font-size: 2rem;
+    }
+
+    .score-display {
+        font-size: 2.5rem;
+    }
+}

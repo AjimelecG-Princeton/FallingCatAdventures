@@ -26,8 +26,10 @@ type UpdateChild = THREE.Object3D & {
 
 class FallingScene extends Scene {
     private GameControls: GameControls;
-    camera: GameCamera;
+    private updateScore: (points: number) => void;
     public static readonly GROUND_LEVEL = -5000;
+    camera: GameCamera;
+
 
     state: {
         gui: dat.GUI;
@@ -47,8 +49,9 @@ class FallingScene extends Scene {
         healthBar: HealthBar;
     };
 
-    constructor(domElement: HTMLElement, healthBar: HealthBar) {
+    constructor(domElement: HTMLElement, healthBar: HealthBar, updateScore: (points: number) => void) {
         super();
+        this.updateScore = updateScore;
 
         this.state = {
             gui: new dat.GUI(),
@@ -90,6 +93,7 @@ class FallingScene extends Scene {
     // TODO: play noise to indicate healing
     handleCollision(): void {
         this.state.buffer = true;
+        this.updateScore(1); // Give one point
         this.state.healthBar.setHealth(
             this.state.healthBar.getHealthPercentage() + 10
         );
@@ -107,9 +111,8 @@ class FallingScene extends Scene {
     handleBirdCollision(): void {
         this.state.buffer = true;
         // alert('COLLISION COLLISION!');
-        this.state.healthBar.setHealth(
-            this.state.healthBar.getHealthPercentage() - 20
-        );
+        this.state.healthBar.decreaseHealth(20);
+
         setTimeout(() => {
             this.state.buffer = false;
         }, 1000);
