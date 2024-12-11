@@ -45,6 +45,7 @@ const handleGameOver = () => {
         />
     );
 };
+
 const handleRestart = () => {
     // Clean up old game over menu
     while (gameOverMenuContainer.firstChild) {
@@ -86,7 +87,7 @@ const updateScore = (points: number) => {
 };
 
 // === Scene Setup === //
-const scene = new FallingScene(canvas, healthBar, updateScore);
+const scene = new FallingScene(canvas, healthBar, updateScore, renderer);
 
 // Apply basic css styles
 canvas.style.display = 'none'; // Hide canvas initially

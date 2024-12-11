@@ -6,6 +6,11 @@ import {
     Mesh,
     ArrowHelper,
     FogExp2,
+    SRGBColorSpace,
+    PlaneGeometry,
+    TextureLoader,
+    MeshStandardMaterial,
+    RepeatWrapping,
 } from 'three';
 import BasicLights from '../lights/BasicLights';
 import Cat from '../objects/characters/Cat';
@@ -28,7 +33,7 @@ class FallingScene extends Scene {
     private updateScore: (points: number) => void;
     public static readonly GROUND_LEVEL = -5000;
     camera: GameCamera;
-
+    renderer;
 
     state: {
         updateList: UpdateChild[];
@@ -44,11 +49,15 @@ class FallingScene extends Scene {
         buffer: boolean; // buffer is true upon first hitting a halo, giving temporary immunity from further extraneous intersections
         isEnteringCloud: boolean;
         healthBar: HealthBar;
+        renderer: THREE.WebGLRenderer;
     };
 
-    constructor(domElement: HTMLElement, healthBar: HealthBar, updateScore: (points: number) => void) {
+    constructor(domElement: HTMLElement, healthBar: HealthBar, updateScore: (points: number) => void, renderer: THREE.WebGLRenderer) {
         super();
         this.updateScore = updateScore;
+
+        this.renderer = renderer;
+        this.renderer.outputColorSpace = SRGBColorSpace;
 
         this.state = {
             updateList: [],
@@ -64,6 +73,7 @@ class FallingScene extends Scene {
             buffer: false,
             isEnteringCloud: false,
             healthBar: healthBar,
+            renderer: renderer,
         };
 
         this.background = new Color(0x7ec0ee);
@@ -71,6 +81,15 @@ class FallingScene extends Scene {
         const lights = new BasicLights();
         this.camera = new GameCamera(this.state.cat, domElement);
         this.GameControls = new GameControls(this.state.cat);
+
+        // Start with a small plane
+        const planeGeometry = new PlaneGeometry(1500, 1500, 50, 50);
+        const material = this.loadMaterial_("Water_002_SD/Water_002_", 10);
+        const plane = new Mesh(planeGeometry, material);
+        plane.rotation.x = (-90 / 180) * Math.PI;
+        plane.position.set(0, FallingScene.GROUND_LEVEL, 0);
+
+        this.add(plane);
 
         this.add(lights, this.state.cat, this.state.backgroundIslands);
         this.addToUpdateList(this.state.cat);
@@ -214,6 +233,93 @@ class FallingScene extends Scene {
         this.state.birdManager.reset();
         this.state.cloudManager.reset();
         this.state.backgroundIslands.reset();
+    }
+
+    loadMaterial_(name:String, tiling:number) {
+        const mapLoader = new TextureLoader();
+        const maxAnisotropy = this.renderer.capabilities.getMaxAnisotropy();
+    
+        // Add lights to the scene if not already present
+        if (!this.state) {
+            const lights = new BasicLights();
+            this.add(lights);
+        }
+    
+        const material = new MeshStandardMaterial({
+            roughness: 0.7,
+            metalness: 0.0,
+        });
+    
+        // Load textures with proper error handling and configuration
+        mapLoader.load(
+            'src/textures/' + name + 'COLOR.jpg',
+            (texture) => {
+                texture.anisotropy = maxAnisotropy;
+                texture.wrapS = texture.wrapT = RepeatWrapping;
+                texture.repeat.set(tiling, tiling);
+                texture.colorSpace = SRGBColorSpace;
+                material.map = texture;
+                material.needsUpdate = true;
+            },
+            undefined,
+            (error) => console.error('Error loading color texture:', error)
+        );
+    
+        mapLoader.load(
+            'src/textures/' + name + 'NORM.jpg',
+            (texture) => {
+                texture.anisotropy = maxAnisotropy;
+                texture.wrapS = texture.wrapT = RepeatWrapping;
+                texture.repeat.set(tiling, tiling);
+                material.normalMap = texture;
+                material.needsUpdate = true;
+            },
+            undefined,
+            (error) => console.error('Error loading normal map:', error)
+        );
+    
+        mapLoader.load(
+            'src/textures/' + name + 'ROUGH.jpg',
+            (texture) => {
+                texture.anisotropy = maxAnisotropy;
+                texture.wrapS = texture.wrapT = RepeatWrapping;
+                texture.repeat.set(tiling, tiling);
+                material.roughnessMap = texture;
+                material.needsUpdate = true;
+            },
+            undefined,
+            (error) => console.error('Error loading roughness map:', error)
+        );
+    
+        mapLoader.load(
+            'src/textures/' + name + 'OCC.jpg',
+            (texture) => {
+                texture.anisotropy = maxAnisotropy;
+                texture.wrapS = texture.wrapT = RepeatWrapping;
+                texture.repeat.set(tiling, tiling);
+                material.aoMap = texture;
+                material.aoMapIntensity = 1.0;
+                material.needsUpdate = true;
+            },
+            undefined,
+            (error) => console.error('Error loading AO map:', error)
+        );
+    
+        mapLoader.load(
+            'src/textures/' + name + 'DISP.png',
+            (texture) => {
+                texture.anisotropy = maxAnisotropy;
+                texture.wrapS = texture.wrapT = RepeatWrapping;
+                texture.repeat.set(tiling, tiling);
+                material.displacementMap = texture;
+                material.displacementScale = 0.2; // Adjust this value as needed
+                material.needsUpdate = true;
+            },
+            undefined,
+            (error) => console.error('Error loading displacement map:', error)
+        );
+    
+        return material;
     }
 }
 
