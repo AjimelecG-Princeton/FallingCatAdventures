@@ -35,8 +35,8 @@ class BackgroundIslands extends Group {
         try {
             // Load both models simultaneously with their respective scales
             const [lowPoly, camping] = await Promise.all([
-                this.loadModel('./src/objects/islands/Low poly floating islands.gltf', this.LOW_POLY_SCALE),
-                this.loadModel('./src/objects/islands/Secret Camping spot.gltf', this.CAMPING_SCALE)
+                this.loadModel('./src/objects/islands/background_islands/Low poly floating islands.gltf', this.LOW_POLY_SCALE),
+                this.loadModel('./src/objects/islands/background_islands/Secret Camping spot.gltf', this.CAMPING_SCALE)
             ]);
 
             this.lowPolyIsland = lowPoly;

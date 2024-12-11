@@ -17,13 +17,14 @@ import Cat from '../objects/characters/Cat';
 import GameCamera from '../camera/GameCamera';
 import GameControls from '../game_controls/GameControls';
 import { HealthBar } from '../objects/main/HealthBar';
-import BackgroundIslands from '../objects/islands/BackgroundIslands';
+import BackgroundIslands from '../objects/islands/background_islands/BackgroundIslands';
 import { HaloManager } from '../objects/main/HaloManager';
 import Bird from '../objects/characters/Bird';
 import Cloud from '../objects/characters/Cloud';
 import { BirdManager } from '../objects/main/BirdManager';
 import { CloudManager } from '../objects/main/CloudManager';
 import RoundManager from '../logic/RoundManager';
+import GroundIsland from '../objects/islands/ground_island/GroundIsland';
 
 type UpdateChild = THREE.Object3D & {
     update?: (timeStamp: number) => void;
@@ -41,6 +42,7 @@ class FallingScene extends Scene {
     state: {
         updateList: UpdateChild[];
         backgroundIslands: BackgroundIslands;
+        groundIsland: GroundIsland;
         cat: Cat;
         haloManager: HaloManager;
         birdManager: BirdManager;
@@ -65,6 +67,7 @@ class FallingScene extends Scene {
         this.state = {
             updateList: [],
             backgroundIslands: new BackgroundIslands(FallingScene.GROUND_LEVEL),
+            groundIsland: new GroundIsland(FallingScene.GROUND_LEVEL),
             cat: new Cat(this, FallingScene.GROUND_LEVEL),
             haloManager: new HaloManager(this, FallingScene.GROUND_LEVEL),
             birdManager: new BirdManager(this, FallingScene.GROUND_LEVEL),
@@ -93,9 +96,10 @@ class FallingScene extends Scene {
         this.state.plane.rotation.x = (-90 / 180) * Math.PI;
         this.state.plane.position.set(0, -300, 0);
 
+
         this.add(this.state.plane);
 
-        this.add(lights, this.state.cat, this.state.backgroundIslands);
+        this.add(lights, this.state.cat, this.state.backgroundIslands, this.state.groundIsland);
         this.addToUpdateList(this.state.cat);
 
         this.fog = new FogExp2(0xffffff, 0.00115);
@@ -245,6 +249,7 @@ class FallingScene extends Scene {
         this.state.birdManager.reset();
         this.state.cloudManager.reset();
         this.state.backgroundIslands.reset();
+        this.state.groundIsland.reset();
         this.state.healthBar.reset();
         this.state.plane.position.set(0, -300, 0);
     }
