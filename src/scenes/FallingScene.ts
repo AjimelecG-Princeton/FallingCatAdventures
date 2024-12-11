@@ -1,4 +1,3 @@
-import dat from 'dat.gui';
 import {
     Scene,
     Color,
@@ -32,8 +31,6 @@ class FallingScene extends Scene {
 
 
     state: {
-        gui: dat.GUI;
-        rotationSpeed: number;
         updateList: UpdateChild[];
         backgroundIslands: BackgroundIslands;
         cat: Cat;
@@ -54,8 +51,6 @@ class FallingScene extends Scene {
         this.updateScore = updateScore;
 
         this.state = {
-            gui: new dat.GUI(),
-            rotationSpeed: 1,
             updateList: [],
             backgroundIslands: new BackgroundIslands(FallingScene.GROUND_LEVEL),
             cat: new Cat(this, FallingScene.GROUND_LEVEL),
@@ -79,7 +74,6 @@ class FallingScene extends Scene {
 
         this.add(lights, this.state.cat, this.state.backgroundIslands);
         this.addToUpdateList(this.state.cat);
-        this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
 
         this.fog = new FogExp2(0xffffff, 0.001);
     }
@@ -178,7 +172,7 @@ class FallingScene extends Scene {
     }
 
     update(timeStamp: number): void {
-        const { rotationSpeed, updateList, cat } = this.state;
+        const { updateList, cat } = this.state;
         this.rotation.y = 0;
 
         for (const obj of updateList) {
