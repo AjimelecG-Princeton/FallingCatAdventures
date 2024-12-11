@@ -32,6 +32,7 @@ class FallingScene extends Scene {
     private GameControls: GameControls;
     private updateScore: (points: number) => void;
     public static readonly GROUND_LEVEL = -5000;
+    private previousCatY: number = 200;
     camera: GameCamera;
     renderer;
 
@@ -50,6 +51,7 @@ class FallingScene extends Scene {
         isEnteringCloud: boolean;
         healthBar: HealthBar;
         renderer: THREE.WebGLRenderer;
+        plane: Mesh;
     };
 
     constructor(domElement: HTMLElement, healthBar: HealthBar, updateScore: (points: number) => void, renderer: THREE.WebGLRenderer) {
@@ -74,6 +76,7 @@ class FallingScene extends Scene {
             isEnteringCloud: false,
             healthBar: healthBar,
             renderer: renderer,
+            plane: new Mesh,
         };
 
         this.background = new Color(0x7ec0ee);
@@ -83,18 +86,18 @@ class FallingScene extends Scene {
         this.GameControls = new GameControls(this.state.cat);
 
         // Start with a small plane
-        const planeGeometry = new PlaneGeometry(1500, 1500, 50, 50);
+        const planeGeometry = new PlaneGeometry(3500, 3500, 50, 50);
         const material = this.loadMaterial_("Water_002_SD/Water_002_", 10);
-        const plane = new Mesh(planeGeometry, material);
-        plane.rotation.x = (-90 / 180) * Math.PI;
-        plane.position.set(0, FallingScene.GROUND_LEVEL, 0);
+        this.state.plane = new Mesh(planeGeometry, material);
+        this.state.plane.rotation.x = (-90 / 180) * Math.PI;
+        this.state.plane.position.set(0, -300, 0);
 
-        this.add(plane);
+        this.add(this.state.plane);
 
         this.add(lights, this.state.cat, this.state.backgroundIslands);
         this.addToUpdateList(this.state.cat);
 
-        this.fog = new FogExp2(0xffffff, 0.001);
+        this.fog = new FogExp2(0xffffff, 0.00115);
     }
 
     addToUpdateList(object: UpdateChild): void {
@@ -203,6 +206,8 @@ class FallingScene extends Scene {
         this.camera.update();
         this.GameControls.update(1);
 
+        this.updatePlanePosition(); // Update plane position based on cat's movement
+
         // Update halos
         const newHalo = this.state.haloManager.generateHalo(cat.position.y);
         this.state.haloManager.removePassedHalos(cat.position.y);
@@ -233,6 +238,20 @@ class FallingScene extends Scene {
         this.state.birdManager.reset();
         this.state.cloudManager.reset();
         this.state.backgroundIslands.reset();
+        this.state.plane.position.set(0, -300, 0);
+    }
+
+    updatePlanePosition() {
+        const catPosition = this.state.cat.position;
+        const movementDelta = catPosition.y - this.previousCatY; // Calculate how much the cat has moved down
+
+        // Move the plane the same distance as the cat has moved (but not below the ground level)
+        const newPlaneY = this.state.plane.position.y + movementDelta;
+
+        this.state.plane.position.y = Math.max(newPlaneY, FallingScene.GROUND_LEVEL);
+
+        // Update the previous cat position for next update
+        this.previousCatY = catPosition.y;
     }
 
     loadMaterial_(name:String, tiling:number) {
