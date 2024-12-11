@@ -23,6 +23,7 @@ import Bird from '../objects/characters/Bird';
 import Cloud from '../objects/characters/Cloud';
 import { BirdManager } from '../objects/main/BirdManager';
 import { CloudManager } from '../objects/main/CloudManager';
+import RoundManager from '../logic/RoundManager';
 
 type UpdateChild = THREE.Object3D & {
     update?: (timeStamp: number) => void;
@@ -31,8 +32,9 @@ type UpdateChild = THREE.Object3D & {
 class FallingScene extends Scene {
     private GameControls: GameControls;
     private updateScore: (points: number) => void;
-    public static readonly GROUND_LEVEL = -5000;
+    public static readonly GROUND_LEVEL = -1000;
     private previousCatY: number = 200;
+    private roundManager: RoundManager;
     camera: GameCamera;
     renderer;
 
@@ -50,7 +52,6 @@ class FallingScene extends Scene {
         buffer: boolean; // buffer is true upon first hitting a halo, giving temporary immunity from further extraneous intersections
         isEnteringCloud: boolean;
         healthBar: HealthBar;
-        renderer: THREE.WebGLRenderer;
         plane: Mesh;
     };
 
@@ -75,7 +76,6 @@ class FallingScene extends Scene {
             buffer: false,
             isEnteringCloud: false,
             healthBar: healthBar,
-            renderer: renderer,
             plane: new Mesh,
         };
 
@@ -84,6 +84,7 @@ class FallingScene extends Scene {
         const lights = new BasicLights();
         this.camera = new GameCamera(this.state.cat, domElement);
         this.GameControls = new GameControls(this.state.cat);
+        this.roundManager = new RoundManager();
 
         // Start with a small plane
         const planeGeometry = new PlaneGeometry(3500, 3500, 50, 50);
@@ -203,6 +204,12 @@ class FallingScene extends Scene {
             }
         }
 
+        let isEnd = this.roundManager.checkRoundEnd(this.state.cat.position.y, FallingScene.GROUND_LEVEL);
+
+        if (isEnd) {
+            this.reset();
+        }
+
         this.camera.update();
         this.GameControls.update(1);
 
@@ -238,19 +245,19 @@ class FallingScene extends Scene {
         this.state.birdManager.reset();
         this.state.cloudManager.reset();
         this.state.backgroundIslands.reset();
+        this.state.healthBar.reset();
         this.state.plane.position.set(0, -300, 0);
     }
 
     updatePlanePosition() {
         const catPosition = this.state.cat.position;
-        const movementDelta = catPosition.y - this.previousCatY; // Calculate how much the cat has moved down
+        const movementDelta = catPosition.y - this.previousCatY;
 
         // Move the plane the same distance as the cat has moved (but not below the ground level)
         const newPlaneY = this.state.plane.position.y + movementDelta;
 
         this.state.plane.position.y = Math.max(newPlaneY, FallingScene.GROUND_LEVEL);
 
-        // Update the previous cat position for next update
         this.previousCatY = catPosition.y;
     }
 

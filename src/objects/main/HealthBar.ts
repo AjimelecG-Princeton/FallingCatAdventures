@@ -102,4 +102,8 @@ export class HealthBar {
             this.intervalId = null;
         }
     }
+
+    reset(): void {
+        this.health = this.maxHealth;
+    }
 }
