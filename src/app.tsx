@@ -116,7 +116,7 @@ const startGame = () => {
     gameOverMenuContainer.style.display = 'none';
     
     // Reset game state if needed
-    scene.reset();
+    scene.reset(true);
     healthBar.setHealth(100);
 
     // Start the health bar decreasing over time (e.g., 0.1% every 100ms)
@@ -142,6 +142,8 @@ const resetGame = () => {
 
     // Stop the health bar decreasing when the game is paused
     healthBar.stopDecreasingHealth();
+    healthBar.setHealth(100);
+    scene.reset(true);
 };
 
 

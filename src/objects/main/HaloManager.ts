@@ -6,7 +6,7 @@ export class HaloManager {
     private scene: Scene;
     private firstHaloY: number = 180;
     private readonly haloSpacing: number = 30;
-    private readonly groundLevel: number;
+    private groundLevel: number;
     private readonly STOP_GENERATION_BUFFER = 100; // Stop generating halos this far above ground
 
     constructor(scene: Scene, groundLevel: number) {
@@ -58,11 +58,12 @@ export class HaloManager {
             .map(halo => halo.mesh!) as THREE.Mesh[];
     }
 
-    reset(): void {
+    reset(newGroundLevel: number): void {
         this.halos.forEach(halo => {
             this.scene.remove(halo);
         });
         this.halos = [];
+        this.groundLevel = newGroundLevel;
         this.firstHaloY = 180;
     }
 }

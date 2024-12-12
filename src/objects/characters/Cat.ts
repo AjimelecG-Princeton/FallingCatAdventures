@@ -80,6 +80,10 @@ class Cat extends Group {
             this.velocity = 0; // Stop falling
         }
     }
+
+    reset(newGroundLevel: number): void {
+        this.groundLevel = newGroundLevel;
+    }
 }
 
 export default Cat;

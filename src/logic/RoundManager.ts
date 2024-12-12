@@ -30,18 +30,17 @@ class RoundManager {
         roundCounterElement.style.position = 'fixed';
         roundCounterElement.style.top = '45px';
         roundCounterElement.style.left = '10px';
-        roundCounterElement.style.fontSize = '24px';
+        roundCounterElement.style.fontSize = '22px';
         roundCounterElement.style.fontWeight = 'bold';
         roundCounterElement.style.color = '#ffffff';
         roundCounterElement.style.backgroundColor = '#333333';
         roundCounterElement.style.padding = '10px';
         roundCounterElement.style.borderRadius = '8px';
-        roundCounterElement.style.zIndex = '1000';
 
         // Create the round text
         const roundText = document.createElement('div');
         roundText.className = 'round-text';
-        roundText.innerText = `Round: ${this.currentRound}`;
+        roundText.innerText = `Round ${this.currentRound}`;
         roundCounterElement.appendChild(roundText);
 
         // Append to body
@@ -54,8 +53,12 @@ class RoundManager {
     private updateRoundCounter(): void {
         const roundText = this.roundCounterElement.querySelector('.round-text') as HTMLElement;
         if (roundText) {
-            roundText.innerText = `Round: ${this.currentRound}`;
+            roundText.innerText = `Round ${this.currentRound}`;
         }
+    }
+
+    findRoundNum(): number {
+        return this.currentRound;
     }
 
     // Reset the round count (useful for restarting the game)

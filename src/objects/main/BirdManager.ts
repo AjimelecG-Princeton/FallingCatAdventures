@@ -8,7 +8,7 @@ export class BirdManager {
     private scene: Scene;
     private firstBirdY: number = 180;
     private readonly birdSpacing: number = 30;
-    private readonly groundLevel: number;
+    private groundLevel: number;
     private readonly STOP_GENERATION_BUFFER = 100; // Stop generating Birds this far above ground
 
     constructor(scene: Scene, groundLevel: number) {
@@ -94,11 +94,13 @@ export class BirdManager {
             .map(bird => bird.mesh!) as THREE.Mesh[];
     }
 
-    reset(): void {
+    reset(newGroundLevel: number): void {
         this.birds.forEach(bird => {
             this.scene.remove(bird);
         });
         this.birds = [];
+
+        this.groundLevel = newGroundLevel;
         this.firstBirdY = 180;
     }
 }

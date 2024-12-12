@@ -33,11 +33,15 @@ type UpdateChild = THREE.Object3D & {
 class FallingScene extends Scene {
     private GameControls: GameControls;
     private updateScore: (points: number) => void;
-    public static readonly GROUND_LEVEL = -1000;
+    public static groundLevel = -100;
+    public static readonly MAX_GROUND_DIST = -3000;
+    public static planeLevel = -100;
     private previousCatY: number = 200;
     private roundManager: RoundManager;
     camera: GameCamera;
     renderer;
+    planeGeometry;
+    material;
 
     state: {
         updateList: UpdateChild[];
@@ -66,12 +70,12 @@ class FallingScene extends Scene {
 
         this.state = {
             updateList: [],
-            backgroundIslands: new BackgroundIslands(FallingScene.GROUND_LEVEL),
-            groundIsland: new GroundIsland(FallingScene.GROUND_LEVEL),
-            cat: new Cat(this, FallingScene.GROUND_LEVEL),
-            haloManager: new HaloManager(this, FallingScene.GROUND_LEVEL),
-            birdManager: new BirdManager(this, FallingScene.GROUND_LEVEL),
-            cloudManager: new CloudManager(this, FallingScene.GROUND_LEVEL),
+            backgroundIslands: new BackgroundIslands(FallingScene.groundLevel),
+            groundIsland: new GroundIsland(FallingScene.planeLevel),
+            cat: new Cat(this, FallingScene.groundLevel),
+            haloManager: new HaloManager(this, FallingScene.groundLevel),
+            birdManager: new BirdManager(this, FallingScene.groundLevel),
+            cloudManager: new CloudManager(this, FallingScene.groundLevel),
             birds: [],
             clouds: [],
             firstHaloY: 180, // Starting position of the first halo
@@ -89,13 +93,11 @@ class FallingScene extends Scene {
         this.GameControls = new GameControls(this.state.cat);
         this.roundManager = new RoundManager();
 
-        // Start with a small plane
-        const planeGeometry = new PlaneGeometry(3500, 3500, 50, 50);
-        const material = this.loadMaterial_("Water_002_SD/Water_002_", 10);
-        this.state.plane = new Mesh(planeGeometry, material);
+        this.planeGeometry = new PlaneGeometry(3500, 3500, 50, 50);
+        this.material = this.loadMaterial_("Water_002_SD/Water_002_", 10);
+        this.state.plane = new Mesh(this.planeGeometry, this.material);
         this.state.plane.rotation.x = (-90 / 180) * Math.PI;
-        this.state.plane.position.set(0, -300, 0);
-
+        this.state.plane.position.set(0, FallingScene.planeLevel, 0);
 
         this.add(this.state.plane);
 
@@ -208,10 +210,10 @@ class FallingScene extends Scene {
             }
         }
 
-        let isEnd = this.roundManager.checkRoundEnd(this.state.cat.position.y, FallingScene.GROUND_LEVEL);
+        let isRoundEnd = this.roundManager.checkRoundEnd(this.state.cat.position.y, FallingScene.groundLevel);
 
-        if (isEnd) {
-            this.reset();
+        if (isRoundEnd) {
+            this.reset(false);
         }
 
         this.camera.update();
@@ -243,15 +245,24 @@ class FallingScene extends Scene {
         this.state.backgroundIslands.update(cat.position.y);
     }
 
-    public reset(): void {
+    public reset(restartGame: boolean): void {
+        this.updateGroundLevel();
+
+        if (restartGame) {
+            this.roundManager.reset();
+            FallingScene.groundLevel = -100;
+        }
+
         this.state.cat.position.set(0, 200, 0);
-        this.state.haloManager.reset();
-        this.state.birdManager.reset();
-        this.state.cloudManager.reset();
-        this.state.backgroundIslands.reset();
-        this.state.groundIsland.reset();
+        this.state.cat.reset(FallingScene.groundLevel);
+        this.state.haloManager.reset(FallingScene.groundLevel);
+        this.state.birdManager.reset(FallingScene.groundLevel);
+        this.state.cloudManager.reset(FallingScene.groundLevel);
+        this.state.backgroundIslands.reset(FallingScene.groundLevel);
+        this.state.groundIsland.reset(FallingScene.groundLevel);
+        this.state.plane.position.set(0, FallingScene.planeLevel, 0);
         this.state.healthBar.reset();
-        this.state.plane.position.set(0, -300, 0);
+        this.previousCatY = 200;
     }
 
     updatePlanePosition() {
@@ -261,9 +272,20 @@ class FallingScene extends Scene {
         // Move the plane the same distance as the cat has moved (but not below the ground level)
         const newPlaneY = this.state.plane.position.y + movementDelta;
 
-        this.state.plane.position.y = Math.max(newPlaneY, FallingScene.GROUND_LEVEL);
+        this.state.plane.position.y = Math.max(newPlaneY, FallingScene.groundLevel);
+        this.state.groundIsland.position.y = this.state.plane.position.y + 1;
 
         this.previousCatY = catPosition.y;
+    }
+
+    private calculateGroundHeight(): number {
+        // Dynamically calculates the ground height based on the current round
+        const roundNumber = this.roundManager.findRoundNum();
+        return Math.max(FallingScene.groundLevel - roundNumber * 200, FallingScene.MAX_GROUND_DIST);
+    }
+
+    private updateGroundLevel(): void {
+        FallingScene.groundLevel = this.calculateGroundHeight();
     }
 
     loadMaterial_(name:String, tiling:number) {

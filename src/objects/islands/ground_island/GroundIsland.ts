@@ -11,7 +11,7 @@ import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 class GroundIsland extends Group {
     private model: Mesh | null;
-    private readonly GROUND_LEVEL: number;
+    private GROUND_LEVEL: number;
 
     constructor(groundLevel: number) {
         super();
@@ -61,7 +61,7 @@ class GroundIsland extends Group {
                 this.add(mesh);
 
                 // Position the island at ground level
-                this.position.set(10, this.GROUND_LEVEL, 10);
+                this.position.set(10, this.GROUND_LEVEL + 1, 10);
             },
             undefined,
             (error) => console.error('Error loading model:', error)
@@ -69,7 +69,8 @@ class GroundIsland extends Group {
     }
 
     // Method to reset the island to its initial state 
-    reset(): void {
+    reset(newGroundLevel: number): void {
+        this.GROUND_LEVEL = newGroundLevel;
         if (this.model) {
             this.position.set(10, this.GROUND_LEVEL, 10);
         }

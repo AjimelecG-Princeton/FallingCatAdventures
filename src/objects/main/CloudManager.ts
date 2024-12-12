@@ -6,7 +6,7 @@ export class CloudManager {
     private scene: Scene;
     private firstCloudY: number = 180;
     private readonly cloudSpacing: number = 30;
-    private readonly groundLevel: number;
+    private groundLevel: number;
     private readonly STOP_GENERATION_BUFFER = 100; // Stop generating clouds this far above ground
 
     constructor(scene: Scene, groundLevel: number) {
@@ -60,11 +60,12 @@ export class CloudManager {
             .map(cloud => cloud.mesh!) as THREE.Mesh[];
     }
 
-    reset(): void {
+    reset(newGroundLevel: number): void {
         this.clouds.forEach(cloud => {
             this.scene.remove(cloud);
         });
         this.clouds = [];
+        this.groundLevel = newGroundLevel;
         this.firstCloudY = 180;
     }
 }

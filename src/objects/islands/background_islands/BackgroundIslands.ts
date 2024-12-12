@@ -8,7 +8,7 @@ class BackgroundIslands extends Group {
     private readonly HORIZONTAL_MIN_DISTANCE = 60; // Minimum distance from center
     private readonly HORIZONTAL_MAX_DISTANCE = 80; // Maximum distance from center
     private readonly ISLANDS_PER_LEVEL = 4; // Number of islands at each vertical level
-    private readonly GROUND_LEVEL: number; // Ground level received from FallingScene
+    private GROUND_LEVEL: number; // Ground level received from FallingScene
     private readonly STOP_GENERATION_BUFFER = 200; // Stop generating this far above ground
     private lowPolyIsland: Group | null = null;
     private campingIsland: Group | null = null;
@@ -22,7 +22,6 @@ class BackgroundIslands extends Group {
         this.loader = new GLTFLoader();
         this.lastIslandY = 0;
         this.GROUND_LEVEL = groundLevel;
-
 
         // Load both island models first
         this.loadIslandModels().then(() => {
@@ -140,7 +139,7 @@ class BackgroundIslands extends Group {
         });
     }
 
-    public reset(): void {
+    public reset(newGroundLevel: number): void {
         // Remove all existing islands
         while (this.children.length > 0) {
             this.remove(this.children[0]);
@@ -148,6 +147,9 @@ class BackgroundIslands extends Group {
 
         // Reset the last island Y position
         this.lastIslandY = 0;
+
+        //Change ground level
+        this.GROUND_LEVEL = newGroundLevel;
 
         // Regenerate initial islands
         this.generateInitialIslands();
