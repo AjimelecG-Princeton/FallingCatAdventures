@@ -25,6 +25,7 @@ import { BirdManager } from '../objects/main/BirdManager';
 import { CloudManager } from '../objects/main/CloudManager';
 import RoundManager from '../logic/RoundManager';
 import GroundIsland from '../objects/islands/ground_island/GroundIsland';
+import { ScoreManager } from '../logic/ScoreManager';
 
 type UpdateChild = THREE.Object3D & {
     update?: (timeStamp: number) => void;
@@ -38,10 +39,11 @@ class FallingScene extends Scene {
     public static planeLevel = -100;
     private previousCatY: number = 200;
     private roundManager: RoundManager;
+    private scoreManager: ScoreManager;
+    private planeGeometry: PlaneGeometry;
+    private material;
     camera: GameCamera;
     renderer;
-    planeGeometry;
-    material;
 
     state: {
         updateList: UpdateChild[];
@@ -92,6 +94,7 @@ class FallingScene extends Scene {
         this.camera = new GameCamera(this.state.cat, domElement);
         this.GameControls = new GameControls(this.state.cat);
         this.roundManager = new RoundManager();
+        this.scoreManager = new ScoreManager();
 
         this.planeGeometry = new PlaneGeometry(3500, 3500, 50, 50);
         this.material = this.loadMaterial_("Water_002_SD/Water_002_", 10);
@@ -117,6 +120,8 @@ class FallingScene extends Scene {
     handleCollision(): void {
         this.state.buffer = true;
         this.updateScore(1); // Give one point
+        this.scoreManager.update();
+        
         this.state.healthBar.setHealth(
             this.state.healthBar.getHealthPercentage() + 10
         );
@@ -250,6 +255,7 @@ class FallingScene extends Scene {
 
         if (restartGame) {
             this.roundManager.reset();
+            this.scoreManager.reset();
             FallingScene.groundLevel = -100;
         }
 

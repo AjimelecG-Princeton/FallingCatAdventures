@@ -28,9 +28,9 @@ class RoundManager {
         const roundCounterElement = document.createElement('div');
         roundCounterElement.id = 'round-counter';
         roundCounterElement.style.position = 'fixed';
-        roundCounterElement.style.top = '45px';
+        roundCounterElement.style.top = '50px';
         roundCounterElement.style.left = '10px';
-        roundCounterElement.style.fontSize = '22px';
+        roundCounterElement.style.fontSize = '30px';
         roundCounterElement.style.fontWeight = 'bold';
         roundCounterElement.style.color = '#ffffff';
         roundCounterElement.style.backgroundColor = '#333333';
