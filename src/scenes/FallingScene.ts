@@ -63,7 +63,14 @@ class FallingScene extends Scene {
         plane: Mesh;
     };
 
-    constructor(domElement: HTMLElement, healthBar: HealthBar, updateScore: (points: number) => void, renderer: THREE.WebGLRenderer) {
+    constructor(
+        domElement: HTMLElement, 
+        healthBar: HealthBar, 
+        updateScore: (points: number) => void, 
+        renderer: THREE.WebGLRenderer,
+        roundManager: RoundManager,
+        scoreManager: ScoreManager,
+            ) {
         super();
         this.updateScore = updateScore;
 
@@ -93,8 +100,8 @@ class FallingScene extends Scene {
         const lights = new BasicLights();
         this.camera = new GameCamera(this.state.cat, domElement);
         this.GameControls = new GameControls(this.state.cat);
-        this.roundManager = new RoundManager();
-        this.scoreManager = new ScoreManager();
+        this.roundManager = roundManager;
+        this.scoreManager = scoreManager;
 
         this.planeGeometry = new PlaneGeometry(3500, 3500, 50, 50);
         this.material = this.loadMaterial_("Water_002_SD/Water_002_", 10);

@@ -1,6 +1,6 @@
 class RoundManager {
     private currentRound: number;
-    private roundCounterElement: HTMLElement;
+    public roundCounterElement: HTMLElement;
 
     constructor() {
         this.currentRound = 1;
@@ -36,6 +36,7 @@ class RoundManager {
         roundCounterElement.style.backgroundColor = '#333333';
         roundCounterElement.style.padding = '10px';
         roundCounterElement.style.borderRadius = '8px';
+        roundCounterElement.style.display = 'none';
 
         // Create the round text
         const roundText = document.createElement('div');

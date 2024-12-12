@@ -16,8 +16,8 @@ const GameMenu: FC<GameMenuProps> = ({ onStartGame }) => {
           <section>
             <h2>About the Game</h2>
             <p>
-              Guide your cat through a magical descent, collecting halos as you fall through the sky. 
-              Maneuver carefully to collect as many halos as possible while avoiding obstacles.
+              Guide your cat through a magical descent of many rounds, collecting halos as you fall through the sky. 
+              Maneuver carefully to collect as many halos as possible while avoiding the birds.
             </p>
           </section>
 
@@ -37,7 +37,7 @@ const GameMenu: FC<GameMenuProps> = ({ onStartGame }) => {
                 <h3>Camera & Game</h3>
                 <ul>
                   <li>Mouse - Rotate camera view</li>
-                  <li>ESC - Return to menu</li>
+                  <li>ESC - Return to menu and reset the game</li>
                 </ul>
               </div>
             </div>
@@ -46,7 +46,7 @@ const GameMenu: FC<GameMenuProps> = ({ onStartGame }) => {
           <section>
             <h2>Objective</h2>
             <p>
-              Collect as many halos as possible during your descent. The game ends when you reach the ground.
+              Collect as many halos as possible during your descent. The game ends when your health reaches 0.
               Try to beat your high score with each attempt!
             </p>
           </section>

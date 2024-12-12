@@ -11,12 +11,16 @@ import GameMenu from './game_menu/GameMenu';
 import GameOverMenu from './gameover_menu/GameOverMenu';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import RoundManager from './logic/RoundManager';
+import { ScoreManager } from './logic/ScoreManager';
 
 // === Game State === //
 let isGameRunning = false;
 let animationFrameId: number;
 let score = 0; // TEMPORARY
 let gameOverMenuContainer: HTMLDivElement;
+let roundManager: RoundManager;
+let scoreManager: ScoreManager;
 
 // === Renderer Setup === //
 const renderer = new WebGLRenderer({ antialias: true });
@@ -29,6 +33,9 @@ const handleGameOver = () => {
     canvas.style.display = 'none';
     healthBarContainer.style.display = 'none';
     gameOverMenuContainer.style.display = 'block';
+
+    roundManager.roundCounterElement.style.display = 'none';
+    scoreManager.scoreCounterElement.style.display = 'none';
     
     // Stop the game loop
     if (animationFrameId) {
@@ -87,7 +94,14 @@ const updateScore = (points: number) => {
 };
 
 // === Scene Setup === //
-const scene = new FallingScene(canvas, healthBar, updateScore, renderer);
+const scene = new FallingScene(
+    canvas, 
+    healthBar, 
+    updateScore, 
+    renderer,
+    roundManager = new RoundManager(),
+    scoreManager = new ScoreManager()
+);
 
 // Apply basic css styles
 canvas.style.display = 'none'; // Hide canvas initially
@@ -114,6 +128,8 @@ const startGame = () => {
     healthBarContainer.style.display = 'block';
     menuContainer.style.display = 'none';
     gameOverMenuContainer.style.display = 'none';
+    roundManager.roundCounterElement.style.display = 'block';
+    scoreManager.scoreCounterElement.style.display = 'block';
     
     // Reset game state if needed
     scene.reset(true);
@@ -133,6 +149,8 @@ const resetGame = () => {
     canvas.style.display = 'none';
     healthBarContainer.style.display = 'none';
     menuContainer.style.display = 'block';
+    roundManager.roundCounterElement.style.display = 'none';
+    scoreManager.scoreCounterElement.style.display = 'none';
     
     // Stop the game loop
     if (animationFrameId) {

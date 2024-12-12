@@ -1,6 +1,6 @@
 export class ScoreManager {
     private score: number;
-    private scoreCounterElement: HTMLElement;
+    public scoreCounterElement: HTMLElement;
 
     constructor() {
         this.score = 0;
@@ -19,6 +19,7 @@ export class ScoreManager {
         scoreCounterElement.style.backgroundColor = '#E2E0A2';
         scoreCounterElement.style.padding = '10px';
         scoreCounterElement.style.borderRadius = '8px';
+        scoreCounterElement.style.display = 'none';
 
         // Create the round text
         const scoreText = document.createElement('div');
