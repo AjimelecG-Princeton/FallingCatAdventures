@@ -64,13 +64,13 @@ class FallingScene extends Scene {
     };
 
     constructor(
-        domElement: HTMLElement, 
-        healthBar: HealthBar, 
-        updateScore: (points: number) => void, 
+        domElement: HTMLElement,
+        healthBar: HealthBar,
+        updateScore: (points: number) => void,
         renderer: THREE.WebGLRenderer,
         roundManager: RoundManager,
-        scoreManager: ScoreManager,
-            ) {
+        scoreManager: ScoreManager
+    ) {
         super();
         this.updateScore = updateScore;
 
@@ -92,7 +92,7 @@ class FallingScene extends Scene {
             buffer: false,
             isEnteringCloud: false,
             healthBar: healthBar,
-            plane: new Mesh,
+            plane: new Mesh(),
         };
 
         this.background = new Color(0x7ec0ee);
@@ -104,14 +104,19 @@ class FallingScene extends Scene {
         this.scoreManager = scoreManager;
 
         this.planeGeometry = new PlaneGeometry(3500, 3500, 50, 50);
-        this.material = this.loadMaterial_("Water_002_SD/Water_002_", 10);
+        this.material = this.loadMaterial_('Water_002_SD/Water_002_', 10);
         this.state.plane = new Mesh(this.planeGeometry, this.material);
         this.state.plane.rotation.x = (-90 / 180) * Math.PI;
         this.state.plane.position.set(0, FallingScene.planeLevel, 0);
 
         this.add(this.state.plane);
 
-        this.add(lights, this.state.cat, this.state.backgroundIslands, this.state.groundIsland);
+        this.add(
+            lights,
+            this.state.cat,
+            this.state.backgroundIslands,
+            this.state.groundIsland
+        );
         this.addToUpdateList(this.state.cat);
 
         this.fog = new FogExp2(0xffffff, 0.00115);
@@ -128,13 +133,16 @@ class FallingScene extends Scene {
         this.state.buffer = true;
         this.updateScore(1); // Give one point
         this.scoreManager.update();
-        
+
         this.state.healthBar.setHealth(
             this.state.healthBar.getHealthPercentage() + 10
         );
         setTimeout(() => {
             this.state.buffer = false;
         }, 1000);
+
+        const healSound = new Audio('src/sounds/heal.mp3');
+        healSound.play();
 
         this.state.isEnteringCloud = true;
         setTimeout(() => {
@@ -147,7 +155,8 @@ class FallingScene extends Scene {
         this.state.buffer = true;
         // alert('COLLISION COLLISION!');
         this.state.healthBar.decreaseHealth(20);
-
+        const birdHitSound = new Audio('src/sounds/punch.wav');
+        birdHitSound.play();
         setTimeout(() => {
             this.state.buffer = false;
         }, 1000);
@@ -222,7 +231,10 @@ class FallingScene extends Scene {
             }
         }
 
-        let isRoundEnd = this.roundManager.checkRoundEnd(this.state.cat.position.y, FallingScene.groundLevel);
+        let isRoundEnd = this.roundManager.checkRoundEnd(
+            this.state.cat.position.y,
+            FallingScene.groundLevel
+        );
 
         if (isRoundEnd) {
             this.reset(false);
@@ -244,6 +256,9 @@ class FallingScene extends Scene {
                 cat
             );
             if (newBird) {
+                newBird.setVelocityBasedOnRound(
+                    this.roundManager.findRoundNum()
+                );
                 this.addToUpdateList(newBird);
             }
         }
@@ -285,7 +300,10 @@ class FallingScene extends Scene {
         // Move the plane the same distance as the cat has moved (but not below the ground level)
         const newPlaneY = this.state.plane.position.y + movementDelta;
 
-        this.state.plane.position.y = Math.max(newPlaneY, FallingScene.groundLevel);
+        this.state.plane.position.y = Math.max(
+            newPlaneY,
+            FallingScene.groundLevel
+        );
         this.state.groundIsland.position.y = this.state.plane.position.y + 1;
 
         this.previousCatY = catPosition.y;
@@ -294,28 +312,31 @@ class FallingScene extends Scene {
     private calculateGroundHeight(): number {
         // Dynamically calculates the ground height based on the current round
         const roundNumber = this.roundManager.findRoundNum();
-        return Math.max(FallingScene.groundLevel - roundNumber * 200, FallingScene.MAX_GROUND_DIST);
+        return Math.max(
+            FallingScene.groundLevel - roundNumber * 200,
+            FallingScene.MAX_GROUND_DIST
+        );
     }
 
     private updateGroundLevel(): void {
         FallingScene.groundLevel = this.calculateGroundHeight();
     }
 
-    loadMaterial_(name:String, tiling:number) {
+    loadMaterial_(name: String, tiling: number) {
         const mapLoader = new TextureLoader();
         const maxAnisotropy = this.renderer.capabilities.getMaxAnisotropy();
-    
+
         // Add lights to the scene if not already present
         if (!this.state) {
             const lights = new BasicLights();
             this.add(lights);
         }
-    
+
         const material = new MeshStandardMaterial({
             roughness: 0.7,
             metalness: 0.0,
         });
-    
+
         // Load textures with proper error handling and configuration
         mapLoader.load(
             'src/textures/' + name + 'COLOR.jpg',
@@ -330,7 +351,7 @@ class FallingScene extends Scene {
             undefined,
             (error) => console.error('Error loading color texture:', error)
         );
-    
+
         mapLoader.load(
             'src/textures/' + name + 'NORM.jpg',
             (texture) => {
@@ -343,7 +364,7 @@ class FallingScene extends Scene {
             undefined,
             (error) => console.error('Error loading normal map:', error)
         );
-    
+
         mapLoader.load(
             'src/textures/' + name + 'ROUGH.jpg',
             (texture) => {
@@ -356,7 +377,7 @@ class FallingScene extends Scene {
             undefined,
             (error) => console.error('Error loading roughness map:', error)
         );
-    
+
         mapLoader.load(
             'src/textures/' + name + 'OCC.jpg',
             (texture) => {
@@ -370,7 +391,7 @@ class FallingScene extends Scene {
             undefined,
             (error) => console.error('Error loading AO map:', error)
         );
-    
+
         mapLoader.load(
             'src/textures/' + name + 'DISP.png',
             (texture) => {
@@ -384,7 +405,7 @@ class FallingScene extends Scene {
             undefined,
             (error) => console.error('Error loading displacement map:', error)
         );
-    
+
         return material;
     }
 }

@@ -1,4 +1,13 @@
-import { Group, BufferGeometry, Mesh, MeshStandardMaterial, CylinderGeometry, DoubleSide, SphereGeometry, BoxGeometry} from 'three';
+import {
+    Group,
+    BufferGeometry,
+    Mesh,
+    MeshStandardMaterial,
+    CylinderGeometry,
+    DoubleSide,
+    SphereGeometry,
+    BoxGeometry,
+} from 'three';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 class Cat extends Group {
@@ -8,27 +17,37 @@ class Cat extends Group {
     mesh: Mesh | null = null;
     geometry: BufferGeometry | null = null;
 
-
     constructor(scene: THREE.Scene, groundLevel: number) {
         super();
 
         this.velocity = -0.1; // Falling speed
-        this.groundLevel = groundLevel // Y-coordinate where the ground is
+        this.groundLevel = groundLevel; // Y-coordinate where the ground is
 
         const loader = new GLTFLoader();
 
-        const radius = .5;
+        const radius = 0.5;
         const height = 2;
 
         const widthSegments = 32;
         const heightSegments = 32;
 
         // parameters: radius, widthsegments, heightsegments
-        const sphereHitbox = new SphereGeometry(radius, widthSegments, heightSegments);
-        
+        const sphereHitbox = new SphereGeometry(
+            radius,
+            widthSegments,
+            heightSegments
+        );
+
         // Alternate hitbox options: cylinder, box
         // parameters: radius_top, radius_bottom, height, radialsegments, heightsegments, open_ended
-        const cylinderHitbox = new CylinderGeometry( radius, radius, height, 16, 8, false); 
+        const cylinderHitbox = new CylinderGeometry(
+            radius,
+            radius,
+            height,
+            16,
+            8,
+            false
+        );
         // parameters: width, height, depth, widthseg, heightseg, depthseg
         //const boxHitBox = new BoxGeometry(1.5, 1.5, 1.5, 8, 8, 8);
         const material = new MeshStandardMaterial({
@@ -36,16 +55,13 @@ class Cat extends Group {
             side: DoubleSide,
             transparent: true,
             opacity: 0,
-        })
-
-
+        });
 
         loader.load(
             './src/objects/characters/Cat.gltf',
             (gltf) => {
                 // Scale the object directly
-                gltf.scene.scale.set(.01, .01, .01); // Adjust for Cat only
-                
+                gltf.scene.scale.set(0.01, 0.01, 0.01); // Adjust for Cat only
 
                 // this.mesh = new Mesh(sphereHitbox, material);
                 // Alternate hitboxes
@@ -54,7 +70,7 @@ class Cat extends Group {
                 this.geometry = this.mesh.geometry;
 
                 this.add(this.mesh);
-                
+
                 // Add the object to the group
                 this.add(gltf.scene);
                 scene.add(this);

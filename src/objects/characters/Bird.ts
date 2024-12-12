@@ -25,6 +25,7 @@ class Bird extends Group {
     haloPosition: Vector3 | null = null;
 
     velocity = 0.05;
+    maxVelocity = 0.1;
 
     constructor(scene: THREE.Scene) {
         super();
@@ -79,6 +80,13 @@ class Bird extends Group {
         );
     }
 
+    setVelocityBasedOnRound(roundNumber: number) {
+        const base = 1.1; // Adjust for the rate of growth (slightly above 1 for gradual increase)
+        const maxMult = 0.95;
+        const multiplier = Math.min(maxMult, 1 - Math.pow(base, -roundNumber));
+        this.velocity = multiplier * this.maxVelocity;
+    }
+
     // Set position with random offset
     setRandomPosition(baseY: number, spacing: number): void {
         this.position.set(
@@ -119,6 +127,10 @@ class Bird extends Group {
             // TODO: prevent "clipping" when the bird is directly under the cat
             const directionToCat = this.cat.position.clone().sub(this.position);
             directionToCat.setY(0);
+            const distToCat = directionToCat.length();
+            if (distToCat <= 0.01) {
+                return;
+            }
             directionToCat.normalize();
 
             if (Math.random() <= 0.005) {

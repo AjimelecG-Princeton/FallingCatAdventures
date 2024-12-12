@@ -1,6 +1,6 @@
 /**
- * app.tsx    
- * 
+ * app.tsx
+ *
  * Main entry point that sets up the Renderer, Scene, Camera,
  * Menu System, and Game Loop.
  */
@@ -36,7 +36,7 @@ const handleGameOver = () => {
 
     roundManager.roundCounterElement.style.display = 'none';
     scoreManager.scoreCounterElement.style.display = 'none';
-    
+
     // Stop the game loop
     if (animationFrameId) {
         window.cancelAnimationFrame(animationFrameId);
@@ -46,8 +46,8 @@ const handleGameOver = () => {
     // Render the game over menu
     const gameOverRoot = createRoot(gameOverMenuContainer);
     gameOverRoot.render(
-        <GameOverMenu 
-            score={score} 
+        <GameOverMenu
+            score={score}
             onRestart={handleRestart} // Use handleRestart instead of startGame
         />
     );
@@ -58,11 +58,11 @@ const handleRestart = () => {
     while (gameOverMenuContainer.firstChild) {
         gameOverMenuContainer.removeChild(gameOverMenuContainer.firstChild);
     }
-    
+
     // Reset all game states
     isGameRunning = false;
     score = 0;
-    
+
     // Stop any existing game loop
     if (animationFrameId) {
         window.cancelAnimationFrame(animationFrameId);
@@ -71,7 +71,7 @@ const handleRestart = () => {
 
     // Stop health decrease
     healthBar.stopDecreasingHealth();
-    
+
     // Start fresh game
     startGame();
 };
@@ -95,12 +95,12 @@ const updateScore = (points: number) => {
 
 // === Scene Setup === //
 const scene = new FallingScene(
-    canvas, 
-    healthBar, 
-    updateScore, 
+    canvas,
+    healthBar,
+    updateScore,
     renderer,
-    roundManager = new RoundManager(),
-    scoreManager = new ScoreManager()
+    (roundManager = new RoundManager()),
+    (scoreManager = new ScoreManager())
 );
 
 // Apply basic css styles
@@ -120,6 +120,22 @@ gameOverMenuContainer.id = 'game-over-menu-container';
 gameOverMenuContainer.style.display = 'none';
 document.body.appendChild(gameOverMenuContainer);
 
+// handle background music
+const backgroundMusic = new Audio('src/sounds/background.mp3');
+backgroundMusic.loop = true;
+
+const playBackgroundMusic = () => {
+    backgroundMusic.currentTime = 0;
+    backgroundMusic.play().catch((error) => {
+        console.error('Error playing background music:', error);
+    });
+};
+
+const stopBackgroundMusic = () => {
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0; // Reset to the start for the next play
+};
+
 // === Game Control Functions === //
 const startGame = () => {
     isGameRunning = true;
@@ -130,17 +146,21 @@ const startGame = () => {
     gameOverMenuContainer.style.display = 'none';
     roundManager.roundCounterElement.style.display = 'block';
     scoreManager.scoreCounterElement.style.display = 'block';
-    
+
     // Reset game state if needed
     scene.reset(true);
     healthBar.setHealth(100);
 
     // Start the health bar decreasing over time (e.g., 0.1% every 100ms)
     healthBar.decreaseHealthOverTime(0.2, 100);
-    
+
+    playBackgroundMusic();
+
     // Start the game loop
     if (!animationFrameId) {
-        animationFrameId = window.requestAnimationFrame(onAnimationFrameHandler);
+        animationFrameId = window.requestAnimationFrame(
+            onAnimationFrameHandler
+        );
     }
 };
 
@@ -151,7 +171,7 @@ const resetGame = () => {
     menuContainer.style.display = 'block';
     roundManager.roundCounterElement.style.display = 'none';
     scoreManager.scoreCounterElement.style.display = 'none';
-    
+
     // Stop the game loop
     if (animationFrameId) {
         window.cancelAnimationFrame(animationFrameId);
@@ -161,9 +181,11 @@ const resetGame = () => {
     // Stop the health bar decreasing when the game is paused
     healthBar.stopDecreasingHealth();
     healthBar.setHealth(100);
+
+    stopBackgroundMusic();
+
     scene.reset(true);
 };
-
 
 // === Render Loop === //
 const onAnimationFrameHandler = (timeStamp: number) => {
