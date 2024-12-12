@@ -60,7 +60,7 @@ class Halo extends Group {
     }
 
     calculateHaloRadius() {
-        return Math.random() * (5 - 1) + 1; // Random radius between 2 and 5
+        return Math.random() * (5 - 1) + 1; // Random radius between 1 and 5
     }
 
     calculateHaloScale() {
