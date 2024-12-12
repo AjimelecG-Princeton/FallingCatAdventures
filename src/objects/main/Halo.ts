@@ -4,20 +4,20 @@ import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 class Halo extends Group {
     mesh: Mesh | null = null;
     geometry: BufferGeometry | null = null;
-    private static readonly SCALE = 0.03;
-    private static readonly RADIUS = 3;
     private static readonly HEIGHT = 1;
+    radius;
 
     constructor(scene: THREE.Scene) {
         super();
 
         const loader = new GLTFLoader();
+        this.radius = this.calculateHaloRadius();
         const cylinderHitbox = new CylinderGeometry(
-            Halo.RADIUS, 
-            Halo.RADIUS, 
+            this.radius, 
+            this.radius, 
             Halo.HEIGHT, 
             16, 
-            2, 
+            2,
             false
         ); 
 
@@ -31,7 +31,8 @@ class Halo extends Group {
         loader.load(
             './src/objects/main/Halo.gltf', 
             (gltf) => {
-                gltf.scene.scale.set(Halo.SCALE, Halo.SCALE, Halo.SCALE);
+                let scale = this.calculateHaloScale();
+                gltf.scene.scale.set(scale, scale, scale);
 
                 this.mesh = new Mesh(cylinderHitbox, material);
                 this.geometry = this.mesh.geometry;
@@ -56,6 +57,14 @@ class Halo extends Group {
             baseY - spacing,
             Math.random() * 20 - 10  // Random Z position between -10 and 10
         );
+    }
+
+    calculateHaloRadius() {
+        return Math.random() * (5 - 1) + 1; // Random radius between 2 and 5
+    }
+
+    calculateHaloScale() {
+        return this.radius * 0.01;
     }
 }
 
