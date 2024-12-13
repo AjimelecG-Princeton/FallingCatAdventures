@@ -1,10 +1,10 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
     "repository": "FallingCatAdventures",
-    "name": "lower-case-dashed-name-of-project",
+    "name": "falling-cat-adventures",
     "type": "module",
     "version": "0.1.0",
-    "title": "PROJECT TITLE HERE",
+    "title": "Falling Cat Adventures",
     "description": "SHORT DESCRIPTION OF PROJECT HERE. ONE TO TWO SENTENCES MAX",
     "keywords": [
         "Princeton",
