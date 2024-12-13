@@ -1,0 +1,174 @@
+{
+    "asset": {
+        "version": "2.0",
+        "generator": "Open Asset Import Library (assimp v5.4.0)"
+    },
+    "extensionsUsed": [
+        "KHR_materials_volume",
+        "FB_ngon_encoding"
+    ],
+    "accessors": [
+        {
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 2352,
+            "type": "VEC3",
+            "max": [
+                37.54057312011719,
+                44.327999114990234,
+                54.873226165771484
+            ],
+            "min": [
+                -66.93885803222656,
+                -9.999999974752427e-7,
+                -52.006168365478516
+            ]
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 2352,
+            "type": "VEC3",
+            "max": [
+                0.9996817708015442,
+                0.9996626377105713,
+                0.9959076642990112
+            ],
+            "min": [
+                -0.9976885914802551,
+                -0.9964802265167236,
+                -0.9957602620124817
+            ]
+        },
+        {
+            "bufferView": 2,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 2352,
+            "type": "VEC2",
+            "max": [
+                0.7887420058250427,
+                0.8221549987792969
+            ],
+            "min": [
+                0.08292499929666519,
+                0.20490598678588867
+            ]
+        },
+        {
+            "bufferView": 3,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 10665,
+            "type": "SCALAR",
+            "max": [
+                2351
+            ],
+            "min": [
+                0
+            ]
+        }
+    ],
+    "buffers": [
+        {
+            "byteLength": 117924,
+            "uri": "Island_0.bin"
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 28224,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 28224,
+            "byteLength": 28224,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 56448,
+            "byteLength": 18816,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 75264,
+            "byteLength": 42660,
+            "target": 34963
+        }
+    ],
+    "images": [
+        {
+            "uri": "textures/image_0.png"
+        }
+    ],
+    "materials": [
+        {
+            "name": "Mat",
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 0
+                },
+                "metallicFactor": 0.0
+            }
+        }
+    ],
+    "meshes": [
+        {
+            "name": "meshes[0]",
+            "primitives": [
+                {
+                    "mode": 4,
+                    "material": 0,
+                    "indices": 3,
+                    "attributes": {
+                        "POSITION": 0,
+                        "NORMAL": 1,
+                        "TEXCOORD_0": 2
+                    }
+                }
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "name": "Island",
+            "children": [
+                1
+            ]
+        },
+        {
+            "name": "Island_node",
+            "mesh": 0,
+            "extras": {
+                "name": "Island"
+            }
+        }
+    ],
+    "samplers": [
+        {
+            "magFilter": 9729,
+            "minFilter": 9986
+        }
+    ],
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "textures": [
+        {
+            "source": 0,
+            "sampler": 0
+        }
+    ],
+    "scene": 0
+}
