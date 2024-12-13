@@ -15,17 +15,23 @@ class Bird extends Group {
     mesh: Mesh | null = null;
     geometry: BufferGeometry | null = null;
 
-    mode: String | null = null; // either TRACK_HALO or TRACK_CAT
+    // birds have 1 of 2 modes: either TRACK_HALO or TRACK_CAT
+    mode: String | null = null;
 
     cat: Cat | null = null;
-    state: String | null = null; // in TRACK_HALO mode, either TOWARDS_CAT or AWAY_FROM_CAT
 
+    // in TRACK_HALO mode, enable START_TURNING when the bird passes through the halo at least once
+    // in TRACK_CAT mode, either TOWARDS_CAT or AWAY_FROM_CAT
+    state: String | null = null; 
+
+    // the halo that the bird may be tracking
     halo: Halo | null = null;
     haloDirection: Vector3 | null = null;
     haloPosition: Vector3 | null = null;
 
-    velocity = 0.05;
-    maxVelocity = 0.1;
+    velocity = 0.05; // actual velocity
+    maxVelocity = 0.1; // maximum velocity
+    oscillationDistance = 5; // distance the bird will oscillate over the halo 
 
     constructor(scene: THREE.Scene) {
         super();
@@ -33,8 +39,6 @@ class Bird extends Group {
         const loader = new GLTFLoader();
 
         const radius = 1;
-        const height = 1;
-
         const widthSegments = 32;
         const heightSegments = 32;
 
@@ -45,8 +49,6 @@ class Bird extends Group {
             heightSegments
         );
 
-        // parameters: radius_top, radius_bottom, height, radialsegments, heightsegments, open_ended
-        // const cylinderHitbox = new CylinderGeometry( radius, radius, height, 16, 2, false);
         const material = new MeshStandardMaterial({
             color: 0xffff00,
             side: DoubleSide,
@@ -59,13 +61,11 @@ class Bird extends Group {
             (gltf) => {
                 console.log('GLTF Bird loaded successfully:', gltf);
 
-                // Scale the Halo object directly
-                gltf.scene.scale.set(1, 1, 1); // Adjust scale for Halo only
+                // Scale the bird object directly
+                gltf.scene.scale.set(1, 1, 1); // Adjust scale for the bird
 
+                // the mesh that represents this bird's hitbox
                 this.mesh = new Mesh(sphereHitbox, material);
-                // Alternate hitboxes
-                // this.mesh = new Mesh(cylinderHitbox, material);
-                // this.mesh = new Mesh(boxHitBox, material);
                 this.geometry = this.mesh.geometry;
 
                 this.add(this.mesh);
@@ -80,9 +80,11 @@ class Bird extends Group {
         );
     }
 
+    // have the birds start slow at low round numbers, and increase up to .95 * maxVelocity gradually
     setVelocityBasedOnRound(roundNumber: number) {
-        const base = 1.1; // Adjust for the rate of growth (slightly above 1 for gradual increase)
+        const base = 1.1;
         const maxMult = 0.95;
+
         const multiplier = Math.min(maxMult, 1 - Math.pow(base, -roundNumber));
         this.velocity = multiplier * this.maxVelocity;
     }
@@ -95,6 +97,8 @@ class Bird extends Group {
             Math.random() * 20 - 10 // Random Z position between -10 and 10
         );
     }
+
+    // how to change the bird position
     update(): void {
         if (this.mode === 'TRACK_HALO') {
             if (this.haloPosition && this.haloDirection) {
@@ -114,8 +118,8 @@ class Bird extends Group {
                     this.haloDirection.multiplyScalar(-1);
                 }
 
-                // TODO: add parameter to adjust how much bird will oscillate over halo
-                if (distanceToHalo >= 5 && this.state === 'START_TURNING') {
+                // bird oscilates
+                if (distanceToHalo >= this.oscillationDistance && this.state === 'START_TURNING') {
                     this.haloDirection.multiplyScalar(-1);
                 }
 
@@ -124,22 +128,26 @@ class Bird extends Group {
                 );
             }
         } else if (this.cat && this.mode === 'TRACK_CAT') {
-            // TODO: prevent "clipping" when the bird is directly under the cat
             const directionToCat = this.cat.position.clone().sub(this.position);
             directionToCat.setY(0);
+
             const distToCat = directionToCat.length();
+
+            // prevent the bird from furiously vibrating back and forth
             if (distToCat <= 0.01) {
                 return;
             }
             directionToCat.normalize();
 
+            // occasionally turn away from the cat, just to be fair
             if (Math.random() <= 0.005) {
                 this.state = 'AWAY_FROM_CAT';
                 setTimeout(() => {
                     this.state = 'TOWARDS_CAT';
-                }, 1);
+                }, 500);
             }
 
+            // temporarily turn away from the cat
             if (this.state === 'AWAY_FROM_CAT') {
                 directionToCat.multiplyScalar(-1);
             }

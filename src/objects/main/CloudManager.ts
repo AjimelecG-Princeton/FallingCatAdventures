@@ -28,9 +28,11 @@ export class CloudManager {
         if (catY <= lastCloudY + this.cloudSpacing + 50 && 
             this.shouldGenerateCloud(this.firstCloudY - this.cloudSpacing)) {
 
+            // pick number of clouds between 0 - 2
             const numClouds = Math.floor(Math.random() * 3);
 
             for (let i = 0; i < numClouds; i++ ){
+                // create clouds
                 const newCloud = new Cloud(this.scene);
                 newCloud.setRandomPosition(this.firstCloudY, this.cloudSpacing);
                 
@@ -40,6 +42,7 @@ export class CloudManager {
         }
     }
 
+    // remove clouds that are no longer visible
     removePassedClouds(catY: number): void {
         const cloudsToRemove = this.clouds.filter(
             (cloud) => cloud.position.y > catY + 20
@@ -54,12 +57,14 @@ export class CloudManager {
         });
     }
 
+    // return meshes of the clouds
     getCloudMeshes(): THREE.Mesh[] {
         return this.clouds
             .filter(cloud => cloud.mesh !== null)
             .map(cloud => cloud.mesh!) as THREE.Mesh[];
     }
 
+    // reset when game is over
     reset(newGroundLevel: number): void {
         this.clouds.forEach(cloud => {
             this.scene.remove(cloud);

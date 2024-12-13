@@ -31,7 +31,7 @@ export class BirdManager {
             this.shouldGenerateBird(this.firstBirdY - this.birdSpacing)) {
             
             // adding bird
-            if (Math.random() <= 1) { // TODO: make probability of a bird spawning adjustable based on difficulty
+            if (Math.random() <= 1) { // Future feature: make probability of a bird spawning adjustable based on difficulty
                 const newBird = new Bird(this.scene);
 
                 // set bird position to be same random range as halo, but different Y position
@@ -41,7 +41,8 @@ export class BirdManager {
                     Math.random() * 20 - 10 // Random Z position between -10 and 10
                 );
 
-                // TODO: adjust probabilities to adjust difficulty
+
+                // randomly select the bird's mode
                 if (Math.random() <= 0.5) {
                     newBird.mode = 'TRACK_HALO';
                     newBird.state = 'INTIAL_TRACKING';
@@ -74,6 +75,7 @@ export class BirdManager {
         return null;
     }
 
+    // remove birds that are no longer visible
     removePassedBirds(catY: number): void {
         const birdsToRemove = this.birds.filter(
             (bird) => bird.position.y > catY + 20
@@ -88,12 +90,14 @@ export class BirdManager {
         });
     }
 
+    // get all the bird meshes
     getBirdMeshes(): THREE.Mesh[] {
         return this.birds
             .filter(bird => bird.mesh !== null)
             .map(bird => bird.mesh!) as THREE.Mesh[];
     }
 
+    // reset when the game is over
     reset(newGroundLevel: number): void {
         this.birds.forEach(bird => {
             this.scene.remove(bird);

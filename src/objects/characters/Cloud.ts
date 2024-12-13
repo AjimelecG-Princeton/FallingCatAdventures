@@ -11,7 +11,7 @@ class Cloud extends Group {
         const loader = new GLTFLoader();
 
         loader.load(
-            './src/objects/characters/Cloud2.gltf', // TODO: have multiple options for clouds, pick randomly
+            './src/objects/characters/Cloud2.gltf',
             (gltf) => {
                 console.log('GLTF Cloud loaded successfully:', gltf);
 
@@ -29,6 +29,7 @@ class Cloud extends Group {
             }
         );
     }
+    
     // Set position with random offset
     setRandomPosition(baseY: number, spacing: number): void {
         this.position.set(

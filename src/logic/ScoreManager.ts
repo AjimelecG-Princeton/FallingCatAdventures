@@ -7,6 +7,7 @@ export class ScoreManager {
         this.scoreCounterElement = this.createScoreCounterElement();
     }
 
+    // Method to create the score counter element
     private createScoreCounterElement(): HTMLElement {
         const scoreCounterElement = document.createElement('div');
         scoreCounterElement.id = 'round-counter';
@@ -41,11 +42,13 @@ export class ScoreManager {
         }
     }
 
+    // update score
     update(): void {
         this.score += 1;
         this.updateScoreCounter();
     }
 
+    // reset score (for resetting game)
     reset(): void {
         this.score = 0;
         this.updateScoreCounter();

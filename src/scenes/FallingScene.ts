@@ -53,12 +53,7 @@ class FallingScene extends Scene {
         haloManager: HaloManager;
         birdManager: BirdManager;
         cloudManager: CloudManager;
-        birds: Bird[];
-        clouds: Cloud[];
-        firstHaloY: number;
-        haloSpacing: number;
         buffer: boolean; // buffer is true upon first hitting a halo, giving temporary immunity from further extraneous intersections
-        isEnteringCloud: boolean;
         healthBar: HealthBar;
         plane: Mesh;
     };
@@ -85,88 +80,82 @@ class FallingScene extends Scene {
             haloManager: new HaloManager(this, FallingScene.groundLevel),
             birdManager: new BirdManager(this, FallingScene.groundLevel),
             cloudManager: new CloudManager(this, FallingScene.groundLevel),
-            birds: [],
-            clouds: [],
-            firstHaloY: 180, // Starting position of the first halo
-            haloSpacing: 30, // Vertical spacing between halo
             buffer: false,
-            isEnteringCloud: false,
             healthBar: healthBar,
             plane: new Mesh(),
         };
 
         this.background = new Color(0x7ec0ee);
-
         const lights = new BasicLights();
         this.camera = new GameCamera(this.state.cat, domElement);
+
         this.GameControls = new GameControls(this.state.cat);
         this.roundManager = roundManager;
         this.scoreManager = scoreManager;
 
+        // Set up ground and load material for ground
         this.planeGeometry = new PlaneGeometry(3500, 3500, 50, 50);
         this.material = this.loadMaterial_('Water_002_SD/Water_002_', 10);
         this.state.plane = new Mesh(this.planeGeometry, this.material);
         this.state.plane.rotation.x = (-90 / 180) * Math.PI;
         this.state.plane.position.set(0, FallingScene.planeLevel, 0);
 
-        this.add(this.state.plane);
-
         this.add(
             lights,
+            this.state.plane,
             this.state.cat,
             this.state.backgroundIslands,
             this.state.groundIsland
         );
         this.addToUpdateList(this.state.cat);
 
-        this.fog = new FogExp2(0xffffff, 0.00115);
+        this.fog = new FogExp2(0xffffff, 0.00115); // add fog effect so further objects are hard to see
     }
 
+    // Add object to the update list
     addToUpdateList(object: UpdateChild): void {
         this.state.updateList.push(object);
     }
 
-    // Upon collision, perform some action
-    // set buffer to be true temporarily so we don't double count the same collision
-    // TODO: play noise to indicate healing
+    // handle what occurs when the cat enters a halo
     handleCollision(): void {
-        this.state.buffer = true;
-        this.updateScore(1); // Give one point
+        this.state.buffer = true; // set buffer to be true temporarily so we don't double count the same collision
+        this.updateScore(1); // halo = +1 point
         this.scoreManager.update();
 
+        // Increases health by 10 and play healing sound
         this.state.healthBar.setHealth(
             this.state.healthBar.getHealthPercentage() + 10
         );
         setTimeout(() => {
-            this.state.buffer = false;
+            this.state.buffer = false; // reset the temporary immunity after 1000 ms
         }, 1000);
 
+        // play sound to indicate healing by halo
         const healSound = new Audio('src/sounds/heal.mp3');
         healSound.play();
-
-        this.state.isEnteringCloud = true;
-        setTimeout(() => {
-            this.state.isEnteringCloud = false;
-        }, 50);
     }
 
-    // TODO: flash red
+    // handle what occurs when the cat hits a bird
     handleBirdCollision(): void {
-        this.state.buffer = true;
-        // alert('COLLISION COLLISION!');
-        this.state.healthBar.decreaseHealth(20);
+        this.state.buffer = true; //temporary immunity, so we don't repeatedly hit the same bird
+        this.state.healthBar.decreaseHealth(20); // take damage when hitting a bird
+
+        // play a sound to indicate taking damage
         const birdHitSound = new Audio('src/sounds/punch.wav');
         birdHitSound.play();
         setTimeout(() => {
-            this.state.buffer = false;
+            this.state.buffer = false; // reset the immunity
         }, 1000);
     }
 
+    // detect collisions with birds and halos
     detectCollision(): void {
-        if (!this.state.buffer) {
+        if (!this.state.buffer) { // temporary immunity is off
             const cat = this.state.cat;
-            const haloMeshes = this.state.haloManager.getHaloMeshes();
 
+            // get the meshes of the halos and birds
+            const haloMeshes = this.state.haloManager.getHaloMeshes();
             const birdMeshes = this.state.birdManager.getBirdMeshes();
 
             if (!cat.mesh || !cat.geometry) {
@@ -176,16 +165,18 @@ class FallingScene extends Scene {
 
             const catVertices = cat.geometry?.attributes.position;
             const catNormals = cat.geometry?.attributes.normal;
-            const maxDistance = 0.25;
+            const maxDistance = 0.25; // max distance between cat and other mesh before we count it as a "collision"
 
             cat.updateMatrixWorld();
             cat.mesh.updateMatrixWorld();
             const catMatrixWorld = cat.mesh.matrixWorld;
             const raycaster = new Raycaster();
 
+            // loop through each vertex on cat
             for (let i = 0; i < catVertices?.count; i++) {
                 if (this.state.buffer) break;
 
+                // Calculate vertex position and normal in world space
                 const vertex = new Vector3().fromBufferAttribute(
                     catVertices,
                     i
@@ -205,7 +196,7 @@ class FallingScene extends Scene {
                     intersects.length > 0 &&
                     intersects[0].distance < maxDistance
                 ) {
-                    this.handleCollision();
+                    this.handleCollision(); // touched a halo or is inside a halo
                 }
 
                 // find all intersections with birds in birdMeshes
@@ -221,6 +212,7 @@ class FallingScene extends Scene {
         }
     }
 
+    // Update the scene in each frame
     update(timeStamp: number): void {
         const { updateList, cat } = this.state;
         this.rotation.y = 0;
@@ -231,18 +223,18 @@ class FallingScene extends Scene {
             }
         }
 
+        // Check if the round has ended
         let isRoundEnd = this.roundManager.checkRoundEnd(
             this.state.cat.position.y,
             FallingScene.groundLevel
         );
 
         if (isRoundEnd) {
-            this.reset(false);
+            this.reset(false); // Reset the game if round ends
         }
 
         this.camera.update();
         this.GameControls.update(1);
-
         this.updatePlanePosition(); // Update plane position based on cat's movement
 
         // Update halos
@@ -250,12 +242,14 @@ class FallingScene extends Scene {
         this.state.haloManager.removePassedHalos(cat.position.y);
 
         if (newHalo) {
+            // for each halo, have an associated bird
             const newBird = this.state.birdManager.generateBird(
                 cat.position.y,
                 newHalo,
                 cat
             );
             if (newBird) {
+                // bird will get faster each round
                 newBird.setVelocityBasedOnRound(
                     this.roundManager.findRoundNum()
                 );
@@ -263,11 +257,16 @@ class FallingScene extends Scene {
             }
         }
 
+        // remove birds that are no longer visible
         this.state.birdManager.removePassedBirds(cat.position.y);
 
+        // generate clouds
         this.state.cloudManager.generateCloud(cat.position.y);
+
+        // remove clouds that are no longer visible
         this.state.cloudManager.removePassedClouds(cat.position.y);
 
+        // check for collisions
         this.detectCollision();
         this.state.backgroundIslands.update(cat.position.y);
     }
@@ -275,12 +274,14 @@ class FallingScene extends Scene {
     public reset(restartGame: boolean): void {
         this.updateGroundLevel();
 
+        //If entire game resarts (not just round)
         if (restartGame) {
             this.roundManager.reset();
             this.scoreManager.reset();
             FallingScene.groundLevel = -100;
         }
 
+        // Reset cat, islands, and other objects
         this.state.cat.position.set(0, 200, 0);
         this.state.cat.reset(FallingScene.groundLevel);
         this.state.haloManager.reset(FallingScene.groundLevel);
@@ -292,7 +293,11 @@ class FallingScene extends Scene {
         this.state.healthBar.reset();
         this.previousCatY = 200;
     }
-
+    
+    // Update plane (ground) position
+    // Necessary because the texture doesn't load on background
+    // Plane will be moved with relation to the cat's position
+    // Furthest the plane can move is the ground level
     updatePlanePosition() {
         const catPosition = this.state.cat.position;
         const movementDelta = catPosition.y - this.previousCatY;
@@ -304,11 +309,13 @@ class FallingScene extends Scene {
             newPlaneY,
             FallingScene.groundLevel
         );
+        
         this.state.groundIsland.position.y = this.state.plane.position.y + 1;
 
         this.previousCatY = catPosition.y;
     }
-
+    
+    // Ground will get further based on the round number
     private calculateGroundHeight(): number {
         // Dynamically calculates the ground height based on the current round
         const roundNumber = this.roundManager.findRoundNum();
@@ -322,6 +329,8 @@ class FallingScene extends Scene {
         FallingScene.groundLevel = this.calculateGroundHeight();
     }
 
+    // Load material from the plane
+    // This code is based on: https://github.com/arcturus3/lightsaber-dojo
     loadMaterial_(name: String, tiling: number) {
         const mapLoader = new TextureLoader();
         const maxAnisotropy = this.renderer.capabilities.getMaxAnisotropy();
