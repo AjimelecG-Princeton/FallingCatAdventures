@@ -6,7 +6,6 @@ import {
     MeshStandardMaterial,
     DoubleSide,
     Vector3,
-    Object3D,
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 import Cat from './Cat';

@@ -9,7 +9,6 @@ import FallingScene from './scenes/FallingScene';
 import { HealthBar } from './objects/main/HealthBar';
 import GameMenu from './game_menu/GameMenu';
 import GameOverMenu from './gameover_menu/GameOverMenu';
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import RoundManager from './logic/RoundManager';
 import { ScoreManager } from './logic/ScoreManager';

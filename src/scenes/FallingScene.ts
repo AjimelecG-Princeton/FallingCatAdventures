@@ -4,7 +4,6 @@ import {
     Raycaster,
     Vector3,
     Mesh,
-    ArrowHelper,
     FogExp2,
     SRGBColorSpace,
     PlaneGeometry,
@@ -19,8 +18,6 @@ import GameControls from '../game_controls/GameControls';
 import { HealthBar } from '../objects/main/HealthBar';
 import BackgroundIslands from '../objects/islands/background_islands/BackgroundIslands';
 import { HaloManager } from '../objects/main/HaloManager';
-import Bird from '../objects/characters/Bird';
-import Cloud from '../objects/characters/Cloud';
 import { BirdManager } from '../objects/main/BirdManager';
 import { CloudManager } from '../objects/main/CloudManager';
 import RoundManager from '../logic/RoundManager';

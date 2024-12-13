@@ -62,7 +62,7 @@ class BackgroundIslands extends Group {
         });
     }
 
-    private getRandomPosition(y: number): { x: number; z: number } {
+    private getRandomPosition(): { x: number; z: number } {
         const angle = Math.random() * Math.PI * 2;
         const distance = this.HORIZONTAL_MIN_DISTANCE + 
             Math.random() * (this.HORIZONTAL_MAX_DISTANCE - this.HORIZONTAL_MIN_DISTANCE);
@@ -98,7 +98,7 @@ class BackgroundIslands extends Group {
             const island = sourceModel.clone();
 
             // Get random position outside control bounds
-            const { x, z } = this.getRandomPosition(y);
+            const { x, z } = this.getRandomPosition();
             
             // Add some random rotation and slight y-position variation
             island.position.set(x, y + (Math.random() * 40 - 10), z);

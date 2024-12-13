@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { RotateCcw } from 'lucide-react';
 import './GameOverMenu.css';
 

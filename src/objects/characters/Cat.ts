@@ -5,8 +5,6 @@ import {
     MeshStandardMaterial,
     CylinderGeometry,
     DoubleSide,
-    SphereGeometry,
-    BoxGeometry,
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
@@ -27,16 +25,6 @@ class Cat extends Group {
 
         const radius = 0.5;
         const height = 2;
-
-        const widthSegments = 32;
-        const heightSegments = 32;
-
-        // parameters: radius, widthsegments, heightsegments
-        const sphereHitbox = new SphereGeometry(
-            radius,
-            widthSegments,
-            heightSegments
-        );
 
         // Alternate hitbox options: cylinder, box
         // parameters: radius_top, radius_bottom, height, radialsegments, heightsegments, open_ended
