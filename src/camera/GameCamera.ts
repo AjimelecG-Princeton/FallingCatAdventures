@@ -1,5 +1,5 @@
 import { MathUtils, PerspectiveCamera, Vector3 } from 'three';
-import Cat from '../objects/Cat';
+import Cat from '../objects/characters/Cat';
 
 class GameCamera extends PerspectiveCamera {
     private cat: Cat;
@@ -11,8 +11,8 @@ class GameCamera extends PerspectiveCamera {
     private mouseStartY: number;
     private readonly domElement: HTMLElement;
     private readonly ROTATION_SPEED = 0.05;
-    private readonly CAMERA_DISTANCE = 30;
-    private readonly MIN_POLAR_ANGLE = 0;
+    private readonly CAMERA_DISTANCE = 10;
+    private readonly MIN_POLAR_ANGLE = 0.1;
     private readonly MAX_POLAR_ANGLE = Math.PI * 0.15;
 
     // Reusable vectors to prevent garbage collection
