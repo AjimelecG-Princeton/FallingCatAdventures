@@ -6,6 +6,7 @@ import {
     MeshStandardMaterial,
     DoubleSide,
     Vector3,
+    Object3D,
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 import Cat from './Cat';
@@ -58,6 +59,22 @@ class Bird extends Group {
             './src/objects/characters/Pigeon.gltf',
             (gltf) => {
                 console.log('GLTF Bird loaded successfully:', gltf);
+
+                // Brighten the materials
+                gltf.scene.traverse((child) => {
+                    if (child instanceof Mesh && child.material) {
+                        // If the material is an array, process each material
+                        if (Array.isArray(child.material)) {
+                            child.material.forEach(material => {
+
+                                material.color.multiplyScalar(4); // Increase brightness
+                            });
+                        } else {
+                            // Single material
+                            child.material.color.multiplyScalar(4);
+                        }
+                    }
+                });
 
                 // Scale the Halo object directly
                 gltf.scene.scale.set(1, 1, 1); // Adjust scale for Halo only

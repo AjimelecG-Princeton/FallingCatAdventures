@@ -14,6 +14,25 @@ class Cloud extends Group {
             './src/objects/characters/Cloud2.gltf', // TODO: have multiple options for clouds, pick randomly
             (gltf) => {
                 console.log('GLTF Cloud loaded successfully:', gltf);
+                // Brighten the cloud materials
+                gltf.scene.traverse((child) => {
+                    if (child instanceof Mesh && child.material) {
+                        if (Array.isArray(child.material)) {
+                            child.material.forEach(material => {
+                                material.emissive.setRGB(0.4, 0.4, 0.4);
+                                material.emissiveIntensity = 0.6;
+                                material.color.multiplyScalar(2); // Increase brightness
+                                material.opacity = 0.9; // Slightly transparent clouds
+                            });
+                        } else {
+                            child.material.emissive.setRGB(0.4, 0.4, 0.4);
+                            child.material.emissiveIntensity = 0.6;
+                            child.material.color.multiplyScalar(2);
+                            child.material.transparent = true;
+                            child.material.opacity = 0.9;
+                        }
+                    }
+                });
 
                 // pick a scale from 2-5
                 const scale = Math.random() * 3 + 2;
