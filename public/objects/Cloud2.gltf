@@ -115,7 +115,7 @@
     ],
     "nodes": [
         {
-            "name": "Cloud2",
+            "name": "Cloud",
             "children": [
                 1
             ]

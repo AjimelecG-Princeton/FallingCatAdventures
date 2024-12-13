@@ -46,7 +46,7 @@ class Cat extends Group {
         });
 
         loader.load(
-            './src/objects/characters/Cat.gltf',
+            'objects/Cat.gltf',
             (gltf) => {
                 // Scale the object directly
                 gltf.scene.scale.set(0.01, 0.01, 0.01); // Adjust for Cat only

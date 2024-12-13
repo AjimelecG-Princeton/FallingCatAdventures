@@ -129,7 +129,7 @@ class FallingScene extends Scene {
         }, 1000);
 
         // play sound to indicate healing by halo
-        const healSound = new Audio('src/sounds/heal.mp3');
+        const healSound = new Audio('sounds/heal.mp3');
         healSound.play();
     }
 
@@ -139,7 +139,7 @@ class FallingScene extends Scene {
         this.state.healthBar.decreaseHealth(20); // take damage when hitting a bird
 
         // play a sound to indicate taking damage
-        const birdHitSound = new Audio('src/sounds/punch.wav');
+        const birdHitSound = new Audio('sounds/punch.wav');
         birdHitSound.play();
         setTimeout(() => {
             this.state.buffer = false; // reset the immunity
@@ -345,7 +345,7 @@ class FallingScene extends Scene {
 
         // Load textures with proper error handling and configuration
         mapLoader.load(
-            'src/textures/' + name + 'COLOR.jpg',
+            'textures/' + name + 'COLOR.jpg',
             (texture) => {
                 texture.anisotropy = maxAnisotropy;
                 texture.wrapS = texture.wrapT = RepeatWrapping;
@@ -359,7 +359,7 @@ class FallingScene extends Scene {
         );
 
         mapLoader.load(
-            'src/textures/' + name + 'NORM.jpg',
+            'textures/' + name + 'NORM.jpg',
             (texture) => {
                 texture.anisotropy = maxAnisotropy;
                 texture.wrapS = texture.wrapT = RepeatWrapping;
@@ -372,7 +372,7 @@ class FallingScene extends Scene {
         );
 
         mapLoader.load(
-            'src/textures/' + name + 'ROUGH.jpg',
+            'textures/' + name + 'ROUGH.jpg',
             (texture) => {
                 texture.anisotropy = maxAnisotropy;
                 texture.wrapS = texture.wrapT = RepeatWrapping;
@@ -385,7 +385,7 @@ class FallingScene extends Scene {
         );
 
         mapLoader.load(
-            'src/textures/' + name + 'OCC.jpg',
+            'textures/' + name + 'OCC.jpg',
             (texture) => {
                 texture.anisotropy = maxAnisotropy;
                 texture.wrapS = texture.wrapT = RepeatWrapping;
@@ -399,7 +399,7 @@ class FallingScene extends Scene {
         );
 
         mapLoader.load(
-            'src/textures/' + name + 'DISP.png',
+            'textures/' + name + 'DISP.png',
             (texture) => {
                 texture.anisotropy = maxAnisotropy;
                 texture.wrapS = texture.wrapT = RepeatWrapping;

@@ -11,7 +11,7 @@ class Cloud extends Group {
         const loader = new GLTFLoader();
 
         loader.load(
-            './src/objects/characters/Cloud2.gltf',
+            'objects/Cloud2.gltf',
             (gltf) => {
                 console.log('GLTF Cloud loaded successfully:', gltf);
                 // Brighten the cloud materials

@@ -57,7 +57,7 @@ class Bird extends Group {
         });
 
         loader.load(
-            './src/objects/characters/Pigeon.gltf',
+            'objects/Pigeon.gltf',
             (gltf) => {
                 console.log('GLTF Bird loaded successfully:', gltf);
 

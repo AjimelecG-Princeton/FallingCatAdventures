@@ -22,7 +22,7 @@ class GroundIsland extends Group {
         // Load the island model
         const loader = new GLTFLoader();
         loader.load(
-            './src/objects/islands/ground_island/island.gltf',
+            'objects/Island.gltf',
             (gltf) => {
                 // Get the first mesh from the loaded model
                 const mesh = gltf.scene.children[0].children[0] as Mesh;
@@ -30,7 +30,7 @@ class GroundIsland extends Group {
                 // Load and apply texture
                 const textureLoader = new TextureLoader();
                 textureLoader.load(
-                    './src/objects/islands/ground_island/textures/image_0.png',
+                    'textures/image_0.png',
                     (texture) => {
                         // Configure texture settings for palette texture
                         texture.colorSpace = SRGBColorSpace;

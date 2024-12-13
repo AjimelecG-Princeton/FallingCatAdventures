@@ -120,7 +120,7 @@ gameOverMenuContainer.style.display = 'none';
 document.body.appendChild(gameOverMenuContainer);
 
 // handle background music
-const backgroundMusic = new Audio('src/sounds/background.mp3');
+const backgroundMusic = new Audio('sounds/background.mp3');
 backgroundMusic.loop = true;
 
 const playBackgroundMusic = () => {

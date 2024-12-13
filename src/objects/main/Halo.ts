@@ -29,7 +29,7 @@ class Halo extends Group {
         })
 
         loader.load(
-            './src/objects/main/Halo.gltf', 
+            'objects/Halo.gltf', 
             (gltf) => {
                 let scale = this.calculateHaloScale();
                 gltf.scene.scale.set(scale, scale, scale);
