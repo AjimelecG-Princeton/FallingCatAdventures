@@ -1,7 +1,36 @@
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// Vite config settings go here
 export default defineConfig({
-    // Base URL MUST match the name of your repository for GitHub Pages to work
-    base: '/FallingCatAdventures/',
+  // Use environment variable for base URL if available, fallback to repository name
+  base: process.env.VITE_BASE_URL || '/FallingCatAdventures/',
+  
+  plugins: [react()],
+  
+  resolve: {
+    alias: {
+      '@': '/src'
+    }
+  },
+
+  server: {
+    port: 3000,
+    host: true,
+    open: true
+  },
+
+  build: {
+    sourcemap: true,
+    outDir: 'dist',
+    assetsDir: 'assets',
+    // Ensure proper handling of assets
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+        assetFileNames: 'assets/[name].[hash][extname]',
+        chunkFileNames: 'assets/[name].[hash].js',
+        entryFileNames: 'assets/[name].[hash].js',
+      }
+    }
+  }
 });
