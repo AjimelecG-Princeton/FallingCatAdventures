@@ -27,6 +27,9 @@ jobs:
 
             - name: Build project
               run: npm run build
+              env:
+                  # Add base URL to ensure assets are loaded correctly
+                  VITE_BASE_URL: /FallingCatAdventures/
 
             - name: Upload production-ready build files
               uses: actions/upload-artifact@v3
@@ -55,3 +58,6 @@ jobs:
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: ./dist
+                  # Add these options for better reliability
+                  force_orphan: true
+                  commit_message: "Deploy: ${{ github.sha }}"

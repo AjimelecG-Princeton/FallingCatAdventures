@@ -2,7 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  base: '/FallingCatAdventures/',
+  // Use environment variable for base URL if available, fallback to repository name
+  base: process.env.VITE_BASE_URL || '/FallingCatAdventures/',
   
   plugins: [react()],
   
@@ -22,9 +23,13 @@ export default defineConfig({
     sourcemap: true,
     outDir: 'dist',
     assetsDir: 'assets',
+    // Ensure proper handling of assets
     rollupOptions: {
       output: {
-        assetFileNames: 'assets/[name].[hash][extname]'
+        manualChunks: undefined,
+        assetFileNames: 'assets/[name].[hash][extname]',
+        chunkFileNames: 'assets/[name].[hash].js',
+        entryFileNames: 'assets/[name].[hash].js',
       }
     }
   }
