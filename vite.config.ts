@@ -1,7 +1,31 @@
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// Vite config settings go here
 export default defineConfig({
-    // Base URL MUST match the name of your repository for GitHub Pages to work
-    base: '/FallingCatAdventures/',
+  base: '/FallingCatAdventures/',
+  
+  plugins: [react()],
+  
+  resolve: {
+    alias: {
+      '@': '/src'
+    }
+  },
+
+  server: {
+    port: 3000,
+    host: true,
+    open: true
+  },
+
+  build: {
+    sourcemap: true,
+    outDir: 'dist',
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        assetFileNames: 'assets/[name].[hash][extname]'
+      }
+    }
+  }
 });
